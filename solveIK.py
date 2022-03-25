@@ -362,3 +362,6 @@ if __name__ == "__main__":
     print("Success: ", success)
     print("Solution: ", q)
     print("Iterations:", len(rollout))
+
+
+    print("DID THIS WORK???")
