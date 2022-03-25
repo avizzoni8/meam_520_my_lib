@@ -115,35 +115,35 @@ def transform(d,rpy):
 ]"""
 
 def rand_xy():
-    x = np.random()
-    y = np.random()
+    x = np.random.rand()
+    y = np.random.rand()
     if x<0.5: #make is negative
-        return -1*y
-    else
-        return y
+        return -0.75*y
+    else:
+        return 0.75*y
 def rand_z():
-    return np.random()
+    return 0.75*np.random.rand()
 
 def rand_th():
-    x = np.random()
-    y = np.random()
+    x = np.random.rand()
+    y = np.random.rand()
     if x<0.5: #make is negative
-        return -2*pi*y
-    else
-        return 2*pi*y
+        return -pi*y
+    else:
+        return pi*y
 
 targets = [
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
-    transform( np.array([rand_xy, rand_xy, rand_z]), np.array([rand_th,rand_th,rand_th])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            ),
+    transform( np.array([rand_xy(), rand_xy(), rand_z()]), np.array([rand_th(),rand_th(),rand_th()])            )
 ]
 
 
@@ -195,9 +195,9 @@ if __name__ == "__main__":
     print("Time:")
     print("Mean:", np.mean(time_array))
     print("Median:", np.median(time_array))
-    print("Mode:", np.mode(time_array))
+    #print("Mode:", np.mode(time_array))
     print("Iterations:")
     print("Mean:", np.mean(it_array))
     print("Median:", np.median(it_array))
-    print("Mode:", np.mode(it_array))
+    #print("Mode:", np.mode(it_array))
     print("Success Rate:", np.mean(success_array))
