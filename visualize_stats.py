@@ -101,17 +101,17 @@ def transform(d,rpy):
 # to generate your own tests, or directly write out transforms you wish to test.
 
 targets = [
-    transform( np.array([-.3, -.2, .4]), np.array([0,-pi,pi])            ),
-    transform( np.array([-.3, .2, .6]),  np.array([pi/6,-5/6*pi,7/6*pi]) ),
+    transform( np.array([-.2, -.2, .4]), np.array([0,pi,pi])            ),
+    transform( np.array([-.1, .1, .6]),  np.array([pi/6,5/6*pi,7/6*pi]) ),
     transform( np.array([0, 0.5, 0.5]),    np.array([0,pi,-pi])            ),
-    transform( np.array([0, 0.7, .5]),    np.array([0,-pi,pi])            ),
-    transform( np.array([-0.6, 0.1, 0.3]),  np.array([0,pi,pi])            ),
+    transform( np.array([0, 0.7, .5]),    np.array([0,pi,pi])            ),
+    transform( np.array([0.6, 0.1, 0.3]),  np.array([0,pi,pi])            ),
     transform( np.array([.2, 0.4, 0.2]),  np.array([0,pi,-pi/2])       ),
     transform( np.array([-.2, -.6, 0.5]), np.array([0,pi-pi/2,-pi])       ),
     transform( np.array([.2, -.6, 0.5]), np.array([pi/4,pi-pi/2,pi])    ),
-    transform( np.array([0.7, 0.5, 0.2]),   np.array([0,-pi-pi/2,pi])       ),
+    transform( np.array([0.3, 0.5, 0.2]),   np.array([0,-pi-pi/2,pi])       ),
     transform( np.array([.4, 0, 0.4]),   np.array([-pi/2,pi-pi/2,pi])    ),
-    transform( np.array([.4, 0, 0]),     np.array([pi/2,pi-pi/2,pi])    ),
+    transform( np.array([.1, .1, 0.7]),     np.array([pi/2,pi-pi/2,pi])    ),
 ]
 
 '''def rand_xy():
@@ -188,7 +188,7 @@ if __name__ == "__main__":
             success_array[i-1]=1
             arm.safe_move_to_position(q)
         else:
-            success_array[i-1]=1
+            success_array[i-1]=0
             print('IK Failed for this target using this seed.')
 
 
