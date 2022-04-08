@@ -130,6 +130,7 @@ if __name__=='__main__':
         line_pt1 = np.array([[(random.random() * world_length)-world_length/2, (random.random() * world_length)-world_length/2, (random.random() * world_length)-world_length/2]])
         line_pt2 = np.array([[(random.random() * world_length)-world_length/2, (random.random() * world_length)-world_length/2, (random.random() * world_length)-world_length/2]])
         if detectCollision(line_pt1, line_pt2, box)[0]:
+            print("Collision dected", detectCollision(line_pt1, line_pt2, box))
             ax.plot([line_pt1[0,0], line_pt2[0,0]], [line_pt1[0,1], line_pt2[0,1]], [line_pt1[0,2], line_pt2[0,2]], 'r')
         else:
             ax.plot([line_pt1[0,0], line_pt2[0,0]], [line_pt1[0,1], line_pt2[0,1]], [line_pt1[0,2], line_pt2[0,2]], 'b')

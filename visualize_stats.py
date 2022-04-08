@@ -103,21 +103,18 @@ def transform(d,rpy):
 # to generate your own tests, or directly write out transforms you wish to test.
 
 targets = [
-    transform( np.array([0, -.2, .4]), np.array([0,pi,pi])            ),
-    transform( np.array([-.1, .1, .6]),  np.array([pi/6,5/6*pi,7/6*pi]) ),
-    transform( np.array([0, 0.5, 0.5]),    np.array([0,pi,-pi])            ),
+    transform( np.array([0, -.2, .4]),    np.array([0,pi,pi])            ),
+    transform( np.array([-.1, .1, .6]),   np.array([pi/6,5/6*pi,7/6*pi]) ),
+    transform( np.array([0, 0.5, 0.5]),   np.array([0,pi,-pi])            ),
     transform( np.array([0, 0.7, .5]),    np.array([0,pi,pi])            ),
-    transform( np.array([0.6, 0.1, 0.3]),  np.array([0,pi,pi])            ),
+    transform( np.array([0.6, 0.1, 0.3]), np.array([0,pi,pi])            ),
     transform( np.array([.2, 0.4, 0.2]),  np.array([0,pi,-pi/2])       ),
     transform( np.array([-.2, -.6, 0.5]), np.array([0,pi-pi/2,-pi])       ),
-    transform( np.array([.2, -.6, 0.5]), np.array([pi/4,pi-pi/2,pi])    ),
-    transform( np.array([0.3, 0.5, 0.2]),   np.array([0,-pi-pi/2,pi])       ),
-    transform( np.array([.4, 0, 0.4]),   np.array([-pi/2,pi-pi/2,pi])    ),
-    transform( np.array([.1, .1, 0.7]),     np.array([pi/2,pi-pi/2,pi])    ),
+    transform( np.array([.2, -.6, 0.5]),  np.array([pi/4,pi-pi/2,pi])    ),
+    transform( np.array([0.3, 0.5, 0.2]), np.array([0,-pi-pi/2,pi])       ),
+    transform( np.array([.4, 0, 0.4]),    np.array([-pi/2,pi-pi/2,pi])    ),
+    transform( np.array([.1, .1, 0.7]),   np.array([pi/2,pi-pi/2,pi])    ),
 ]
-
-
-
 ####################
 ## Test Execution ##
 ####################
@@ -162,13 +159,17 @@ if __name__ == "__main__":
         if i < len(targets) - 1:
             input("Press Enter to move to next target...")
 
-    print("Performance Statistics \n")
-    print("Time:")
-    print("Mean:", np.mean(time_array))
-    print("Median:", np.median(time_array))
-    print("Mode:", stats.mode(time_array)[0])
-    print("Iterations:")
-    print("Mean:", np.mean(it_array))
-    print("Median:", np.median(it_array))
-    print("Mode:", stats.mode(it_array)[0])
-    print("Success Rate:", np.mean(success_array))
+        print("Performance Statistics \n")
+        print("Time:")
+        print("Mean:", np.mean(time_array))
+        print("Median:", np.median(time_array))
+        print("Mode:", stats.mode(time_array)[0])
+        print("Iterations:")
+        print("Mean:", np.mean(it_array))
+        print("Median:", np.median(it_array))
+        print("Mode:", stats.mode(it_array)[0])
+        print("Success Rate:", np.mean(success_array))
+
+print(target[6])
+print(target[9])
+print(target[10])

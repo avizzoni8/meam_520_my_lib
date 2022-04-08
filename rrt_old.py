@@ -1,10 +1,10 @@
 import numpy as np
 #from planningtree import Tree
 #from planningtree import Node
-from lib.detectCollision import detectCollision
-from lib.loadmap import loadmap
+from detectCollision import detectCollision
+from loadmap import loadmap
 from copy import deepcopy
-from lib.calculateFK import FK
+from calculateFK import FK
 from numpy import linalg as la
 
 class Node: #The random points
@@ -30,62 +30,59 @@ class Tree: #Really just a list of the leafs of the tree - real action is in the
 
     def addleaf(self, newnode):
         #New Node is node object
+        #print('in add leaf')
+        #print("finding closest")
         parentnode, dist = self.closestnode(newnode)
-
-        #Check to see if the distance between new node and closest node is larger than delta
+        #print(dist)
         if dist > self.delta:
-            #Normalize the vector pointing between the points, multiply by delta, add it to parent
-            #Update the data of the new node with that new location
+            #print("dist too large")
             newnode.data = parentnode.data+self.delta*(newnode.data-parentnode.data)/la.norm(newnode.data-parentnode.data)
-
-        #Make the closestnode the parent of the newnode
+            #print("new data", newnode.data)
+        #print("Closest parent data is", parentnode.data)
         newnode.makeparent(parentnode)
-
-        #Add it to the list of lefs
+        #print("new node has parent", newnode.parent!=None)
         self.leafs = self.leafs + [newnode]
-
-        #check is the parent is a leaf or now
         if parentnode.child == None:
-            #Is a leaf so remove it from list of leafs and update child boolean
+            #print("closest was a leaf")
             self.leafs.remove(newnode.parent)
             parentnode.child = 1
             return
         else:
+            #print("closest was not a leaf")
             return
 
     def closestnode(self, node):
-        #Iterate through the paths of each leaf back to the seed.
-
         q = node.data
         i = 0
         lf = self.leafs
         mindist = abs(la.norm(q - lf[0].data))
         minnode = lf[0]
-
         while i < len(self.leafs):
             curnode = lf[i]
             while curnode != None:
                 # find nearest node based off of norm
                 if abs(la.norm(q -curnode.data)) < mindist:
-                    #Current node is closer than current closest - update
                     mindist = abs(la.norm(q -curnode.data))
                     minnode = curnode
-                    #Move down the branch - update current node to current's parent
                     curnode = curnode.parent
                 else:
-                    #Current isn't closest so keep going down the branch
                     curnode = curnode.parent
             i+=1
         return minnode, mindist
 
-    def render_path(self,leaf):
-        #Leaf is leaf node you want the path of - will call this when we get to the end
+    def render_path(self,leaf): #only will be called when we have reached the goal
+        #last element in leafs will be the end of that path.
+        #path = self.path
+        #print("in render path")
         if leaf.parent == None:
-            #at the end so must be at the seed. Add it to the top of the path
+            #print("current has no parent, end")
+            #print("Seed?", self.seed.data.all() == leaf.data.all())
             self.path = np.append(self.seed.data, self.path, axis=0)
             return self.path
         else:
-            #Add data to top of the path
+            #print("data to add", leaf.data)
+            #print("leaf size",np.shape(leaf.data))
+            #print('path size', np.shape(self.path))
             self.path = np.append(leaf.data, self.path, axis=0)
             self.render_path(leaf.parent)
         return self.path
@@ -103,13 +100,15 @@ def rrt(map, start, goal):
     # initialize path
     path = []
 
+    #print('start input',start)
     start.resize(1, 7)
-    goal.resize(1, 7)
+    #print("start resized", start)
 
-    #Create those nodes
+    #print(type(start))
+    goal.resize(1, 7)
+    #print('goal resized',goal)
     seednode = Node(start, None, None)
     goalnode = Node(goal, None, None)
-
     #initialize tree
     Tr = Tree(seednode, goalnode)
 
@@ -117,95 +116,82 @@ def rrt(map, start, goal):
     lowerLim = np.array([-2.8973,-1.7628,-2.8973,-3.0718,-2.8973,-0.0175,-2.8973])
     upperLim = np.array([2.8973,1.7628,2.8973,-0.0698,2.8973,3.7525,2.8973])
 
+    #goal =  np.array([-1.2, 1.57 , 1.57, -2.07, -1.57, 1.57, 0.7])
+
     # Initialize FK Class
     fk = FK()
 
     maxsteps = 100
     i = 0
     while i < maxsteps: #TODO:
-
-        #q_rand_config = np.random.rand(1,7) * (upperLim - lowerLim) + lowerLim
-        q_rand_config = np.random.uniform(lowerLim, upperLim)
-
-        #Add node first because it may update the configuration
+        path = []
+        q_rand_config = np.random.rand(1,7) * (upperLim - lowerLim) + lowerLim
+        #print("random q", q_rand_config)# Generate random config
+        q_rand_work = fk.forward(q_rand_config[0])[0]
+        #print("the joint loc", q_rand_work)
         newnode = Node(q_rand_config, None, None)
         Tr.addleaf(newnode)
 
-        # Convert random config to 3d workspace after it has been added and potentially updated
+        # Convert random config to 3d workspace
         q_rand_work = fk.forward(newnode.data[0])[0]
 
-        #Check if I'm in obstacle
         for obstacle in map.obstacles:
+            #print("checking for collisions")
             obs = obstacle + [-0.15, -0.15, -0.15, 0.15, 0.15, 0.15] #enlarge to account for link thickness
             if detectCollision(q_rand_work[:-1], q_rand_work[1:], obs)[0]:
                 print("We have a collision")
                 i+=1
-                Tr.leafs.remove(newnode) #Remove it from set of leafs since its not a viable configuration
-                return
-            else:
-                pass
-
-        #TODO Check if i can move between successive nodes
-        for obstacle in map.obstacles:
-            obs = obstacle + [-0.15, -0.15, -0.15, 0.15, 0.15, 0.15]# enlarge to account for link thickness
-            previous, _ = fk.forward(newnode.parent.data[0])
-            #print('Previous node', previous)
-            #print('current node', q_rand_work)
-            if detectCollision(q_rand_work, previous, obs)[0]:
-                print("We can't a move here")
                 Tr.leafs.remove(newnode)
-                i += 1
                 return
             else:
-                print("We can move here")
+                #print("no collision")
                 pass
+            #Configuration is not valid because of collision, get new one no need to continue checking
 
-        #TODO Check if I can get to goal from here
-        for obstacle in map.obstacles:
-            obs = obstacle + [-0.15, -0.15, -0.15, 0.15, 0.15, 0.15]# enlarge to account for link thickness
-            goal_jl, _ = fk.forward(goal[0])
-            reach = False
-            if detectCollision(q_rand_work, goal_jl, obs)[0]:
-                print("Cant reach goal from here")
-                pass
-            else:
-                #we can reach the goal from here
-                print("Looks like we are at solution")
-                # Get path and return it
-                path = Tr.render_path(newnode)
-                return path
+        #Now point is okay, so add it to tree as node
+        #print("create new node")
 
+
+        #Check it we are at goal by some tolerance
+        #print("check if we are at solution")
+        #TODO change this to 3D position
+        goal3d = fk.forward(goal[0])[0]
+        #print("goal3d", goal3d)
+        #if la.norm(abs(goal - q_rand_config)) < 1e-1:
+        #if la.norm(abs(goal3d - q_rand_work)) < 1e-1:
+        #print('node error', abs(goal - newnode.data))
+        #if abs(goal - newnode.data).all() < 1e-1:
+        if abs(goal[0][0] - newnode.data[0][0]) < 1e-1:
+            print("Looks like we are at solution")
+            #Get path and return it
+            path = Tr.render_path(newnode)
+            break
+        else:
+            #print("No, keep going")
+            pass
         i+=1
 
     print("end loop")
+    '''for i in Tr.leafs:
+        print(i.data)'''
 
+    #print(Tr.render_path(Tr.leafs[-1]))
+    #print(np.shape(Tr.path))
     return path
 
 
+def dist(x, y):
+    return None
+   # TODO: Implement
+
 if __name__ == '__main__':
+    map_struct = loadmap("maps/map3.txt")
 
-    map_struct = loadmap("..maps/map3.txt")
-    start = np.array([0, -1, 0, -2, 0, 1.57, 0])
-    goal = np.array([-1.2, 1.57, 1.57, -2.07, -1.57, 1.57, 0.7])
-    path = rrt(deepcopy(map_struct), deepcopy(start), deepcopy(goal))
+    start = np.array([0,-1,0,-2,0,1.57,0])
 
-    '''
-
-    lowerLim = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973])
+    goal =  np.array([-1.2, 1.57 , 1.57, -2.07, -1.57, 1.57, 0.7])
+    '''lowerLim = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973])
     upperLim = np.array([2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973])
-
-    success = []
-    i = 0
-    while i < 10:
-
-        start = np.random.uniform(lowerLim,upperLim)
-        goal = np.random.uniform(lowerLim,upperLim)
-        path = rrt(deepcopy(map_struct), deepcopy(start), deepcopy(goal))
-        if path[0]!=[]:
-            success=success+[1]
-        else:
-            success=success+[0]
-        print(path[1])
-        i+=1
-
-    print("success rate", np.mean(success))'''
+    goal = np.random.rand(1, 7) * (upperLim - lowerLim) + lowerLim'''
+    path = rrt(deepcopy(map_struct), deepcopy(start), deepcopy(goal))
+    print(path)

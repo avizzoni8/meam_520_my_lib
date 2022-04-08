@@ -159,11 +159,11 @@ class IK:
         ## STUDENT CODE STARTS HERE
 
         success = False
-        print("in valid solution")
+        #print("in valid solution")
         fk = FK()
         ik = IK()
         end_pose = fk.forward(q)[1]
-        print("end pos is", end_pose)
+        #print("end pos is", end_pose)
         error = ik.distance_and_angle(end_pose,target)
         d_er = error[0]
         ang_er = error[1]
@@ -178,26 +178,6 @@ class IK:
 
         else:
             success = False
-
-        """fk = FK();
-        end_pose = fk.forward(q)[1][0:3,0:3]
-        end_loc = fk.forward(q)[1][0:3,3]
-        target_pose = target[0:3,0:3]
-        target_loc = target[0:3,3]
-
-        if abs(np.linalg.norm(end_loc-target_loc))<= self.linear_tol:
-            #Good, check angular tolerence:
-            ang_error = abs(end_pose-target_pose)
-            for i in [0,1,2]:
-                for j in [0,1,2]:
-                    if ang_error[i,j]<=self.angular_tol:
-                        success = True
-                    else:
-                        success = False
-
-        else:
-            success = False"""
-
 
         ## END STUDENT CODE
 
@@ -362,6 +342,3 @@ if __name__ == "__main__":
     print("Success: ", success)
     print("Solution: ", q)
     print("Iterations:", len(rollout))
-
-
-    

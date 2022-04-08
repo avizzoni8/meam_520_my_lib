@@ -23,7 +23,7 @@ def loadmap(filename):
             # Check to see if first character is b for block
             if len(line) > 0 and line[0] == 'b':
                 words = line.split()
-                # Check if block 
+                # Check if block
                 if words[0] == "block":
                     # Append to obstacles array or set to obstacles array
                     if len(obstacles) == 0:
@@ -33,3 +33,6 @@ def loadmap(filename):
     # Returns the map in a struct
     MyStruct = namedtuple("map", "obstacles")
     return MyStruct(obstacles = obstacles)
+
+#map_struct = loadmap("..maps/map1.txt")
+#print(map_struct[0])
