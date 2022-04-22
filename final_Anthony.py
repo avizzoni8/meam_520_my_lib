@@ -29,7 +29,7 @@ def get_robo_frame(tag):
     print("inv? \n", H_cam_tag0@pose0)
 
     h = H_cam_tag0@transform([0.5,0,0.25],[0,0,0])
-    print("tag0 in robo frame", h)
+    print("tag0 in robo frame \n", h)
     return tag@h
 
 
