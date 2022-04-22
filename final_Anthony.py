@@ -60,7 +60,7 @@ if __name__ == "__main__":
     '''for (name, pose) in detector.get_detections():
          print(name,'\n',pose)
          if name != 'tag0':'''
-    (name, pose) = detector.get_detections()[1]:
+    (name, pose) = detector.get_detections()[1]
     print(name,'\n',pose)
     print("robo frame \n", get_robo_frame(pose))
 
