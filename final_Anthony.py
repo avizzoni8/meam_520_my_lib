@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # Move around...
 
-    ik = IK()
+    '''ik = IK()
     fk = FK()
     #neutral = arm.neutral_position()
     #neutral_3d = fk.forward(arm.neutral_position())[1]
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     #arm.safe_move_to_position(arm.neutral_position())
 
     #arm.safe_move_to_position(grabpose)
-    #arm.safe_move_to_position(droppose)
+    #arm.safe_move_to_position(droppose)'''
 
     # END STUDENT CODE
 
