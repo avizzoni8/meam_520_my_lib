@@ -64,7 +64,7 @@ if __name__ == "__main__":
     print(name,'\n',pose)
     print("robo frame \n", get_robo_frame(pose))
 
-    robotag = get_robo_frame(detector.get_detections()[1][1])@transform([0,0,0],[np.pi/2,0,0])
+    robotag = get_robo_frame(detector.get_detections()[1][1])@np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
 
 
     #TODO use inverse and matrix composition to get tags in robot frame
