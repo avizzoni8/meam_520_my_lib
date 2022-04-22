@@ -22,11 +22,31 @@ from solveIK import IK
 #from rrt import rrt
 from loadmap import loadmap
 
+
+# TODO Drop down & Grab
+# TODO Move to drop pose and place block
+# TODO reset:drop - go to neutral and reorientate
+# TODO reset:grab - go to neutral and reorientate
+
+
 def get_robo_frame(tag):
     pose0 = detector.get_detections()[0][1]
     h = pose0@transform([0.5, 0, 0], [0, 0, 0])
     h = h@tag
     return h@transform([0, 0, 0.05], [0, 0, 0])
+
+def stack(i,cur_q):
+    droppose_3D = np.array([
+        [1, 0, 0, 0.562],
+        [0, -1, 0, -0.169],
+        [0, 0, -1, 0.2+0.005*i], #Starts at 0.2+0.005*X
+        [0, 0, 0, 1],
+    ])
+
+    q = ik.inverse(droppose_3D, cur_q)[0]
+    arm.safe_move_to_position(q)
+    arm.open_gripper()
+
 
 
 if __name__ == "__main__":
@@ -102,27 +122,27 @@ if __name__ == "__main__":
     droppose = ik.inverse(droppose_3D, neutral)[0]
     print('droppose', droppose)
     print('drop  3d',droppose_3D)
-    block = ik.inverse(robotag, grabpose)[0]
+    blocks = []
+    blocks += [ik.inverse(robotag, grabpose)[0]]
     print('block', block)
     print("block 3d", robotag)
 
 
 
-    # TODO Drop down & Grab
-    # TODO Move to drop pose and place block
-    # TODO reset
+    # Master Loop
 
+    #Create
 
-    # Move around...
-    arm.safe_move_to_position(arm.neutral_position())
-    print("going to grab pose")
-    arm.safe_move_to_position(grabpose)
-    print("going to test block")
-    arm.safe_move_to_position(block)
-    print("reset")
-    arm.safe_move_to_position(arm.neutral_position())
-    print("drop pose")
-    arm.safe_move_to_position(droppose)
+    for i in [1,2,3,4]:
+        print("going to test block")
+        arm.safe_move_to_position(blocks[i])
+        """grab function - need to fix orientation"""
+        print("reset and orientate with tag6 up")
+        #arm.safe_move_to_position(arm.neutral_position())
+        print("go to drop")
+        stack(i,q) #will stack block
+
+    """Dynamic Loop?"""
 
     # END STUDENT CODE
 
