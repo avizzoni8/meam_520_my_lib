@@ -21,6 +21,12 @@ from solveIK import IK
 #from rrt import rrt
 from loadmap import loadmap
 
+def get_robo_frame(tag):
+    pose0 = detector.get_detections()[0][1]
+    H_cam_tag0 = np.linalg.inv(pose0)
+    h = H_cam_tag0@transform([-0.5,0,0.25],[0,0,0])
+    return tag@h
+
 
 if __name__ == "__main__":
 
@@ -50,8 +56,10 @@ if __name__ == "__main__":
     # Detect some tags...
     for (name, pose) in detector.get_detections():
          print(name,'\n',pose)
+         if name != 'tag0':
+            print("robo frame \n", get_robo_frame(pose))
 
-    print("trying to get tag0", detector.get_detections()[0])
+
     #TODO use inverse and matrix composition to get tags in robot frame
 
 
