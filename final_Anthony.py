@@ -24,10 +24,10 @@ from loadmap import loadmap
 
 def get_robo_frame(tag):
     pose0 = detector.get_detections()[0][1]
-    #h = np.linalg.inv(pose0)
-    #print("tag0 inv \n", h)
-    h = pose0#@transform([-0.5,0,0],[0,0,0])
-    print("tag0 in robo frame \n", h)
+    h = np.linalg.inv(pose0)
+    print("tag0 inv \n", h)
+    #h = pose#@transform([-0.5,0,0],[0,0,0])
+    #print("tag0 in robo frame \n", h)
     return tag@h
 
 
