@@ -18,7 +18,7 @@ from core.utils import time_in_seconds
 from calculateFK import FK
 from calcJacobian import FK
 from solveIK import IK
-from rrt import rrt
+#from rrt import rrt
 from loadmap import loadmap
 
 
