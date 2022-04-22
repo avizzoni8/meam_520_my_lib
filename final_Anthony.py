@@ -25,7 +25,7 @@ from loadmap import loadmap
 def get_robo_frame(tag):
     pose0 = detector.get_detections()[0][1]
     H_cam_tag0 = np.linalg.inv(pose0)
-    h = H_cam_tag0@transform([-0.5,0,0.25],[0,0,0])
+    h = H_cam_tag0@transform([0.5,0,0.25],[0,0,0])
     return tag@h
 
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     droppose_3D = np.array([
         [1, 0, 0, 0.562],
         [0, -1, 0, -0.169],
-        [0, 0, -1, XXX], #Starts at 0.2+0.005*X
+        [0, 0, -1, 0.3], #Starts at 0.2+0.005*X
         [0, 0, 0, 1],
     ])
 
