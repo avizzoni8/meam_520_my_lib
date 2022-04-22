@@ -22,8 +22,6 @@ from rrt import rrt
 from loadmap import loadmap
 
 
-def
-
 if __name__ == "__main__":
 
     try:
