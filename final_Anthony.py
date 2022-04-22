@@ -27,7 +27,9 @@ def get_robo_frame(tag):
     H_cam_tag0 = np.linalg.inv(pose0)
     print("tag0 inv \n", H_cam_tag0 )
     print("inv? \n", H_cam_tag0@pose0)
+
     h = H_cam_tag0@transform([0.5,0,0.25],[0,0,0])
+    print("tag0 in robo frame", h)
     return tag@h
 
 
