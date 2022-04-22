@@ -62,13 +62,15 @@ if __name__ == "__main__":
     print(name,'\n',pose)
     print("robo frame \n", get_robo_frame(pose))
 
+    robotag = get_robo_frame(detector.get_detections()[1])
+
 
     #TODO use inverse and matrix composition to get tags in robot frame
 
 
     # Move around...
 
-    '''ik = IK()
+    ik = IK()
     fk = FK()
     #neutral = arm.neutral_position()
     #neutral_3d = fk.forward(arm.neutral_position())[1]
@@ -91,17 +93,10 @@ if __name__ == "__main__":
         [0, 0, 0, 1],
     ])
 
-    table_pose3d = np.array([
-        [1, 0, 0, .2],
-        [0, -1, 0, .3],
-        [0, 0, -1, 0.5],
-        [0, 0, 0, 1],
-    ])
-
     # now get them in configuration space:
     grabpose = ik.inverse(grabpose_3D, neutral)[0]
     droppose = ik.inverse(droppose_3D, neutral)[0]
-    table_pose = ik.inverse(table_pose3d, neutral)[0]
+    block = ik.inverse(robotag, grabpose)[0]
 
 
 
@@ -111,14 +106,15 @@ if __name__ == "__main__":
 
 
     # Move around...
-
-    print('pose 3d',table_pose3d)
-    print('pose 7d',table_pose)
-    print('bring it back',fk.forward(droppose)[1])
-    #arm.safe_move_to_position(arm.neutral_position())
-
-    #arm.safe_move_to_position(grabpose)
-    #arm.safe_move_to_position(droppose)'''
+    arm.safe_move_to_position(arm.neutral_position())
+    print("going to grab pose")
+    arm.safe_move_to_position(grabpose)
+    print("going to test block")
+    arm.safe_move_to_position(block)
+    print("reset")
+    arm.safe_move_to_position(arm.neutral_position())
+    print("drop pose")
+    arm.safe_move_to_position(droppose)
 
     # END STUDENT CODE
 
