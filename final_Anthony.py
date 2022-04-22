@@ -53,6 +53,7 @@ if __name__ == "__main__":
     for (name, pose) in detector.get_detections():
          print(name,'\n',pose)
 
+    print("trying to get tag0", detector.get_detections())
     #TODO use inverse and matrix composition to get tags in robot frame
 
 
