@@ -24,7 +24,9 @@ from loadmap import loadmap
 
 def get_robo_frame(tag):
     pose0 = detector.get_detections()[0][1]
-    return pose0@transform([0.5,0,0],[0,0,0])@tag@transform([0,0,0.05],[0,0,0])
+    h =pose0@transform([0.5, 0, 0], [0, 0, 0])
+    h = h@tag
+    return h@transform([0, 0, 0.05], [0, 0, 0])
 
 
 if __name__ == "__main__":
