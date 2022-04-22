@@ -97,8 +97,14 @@ if __name__ == "__main__":
 
     # now get them in configuration space:
     grabpose = ik.inverse(grabpose_3D, neutral)[0]
+    print('grabpose', grabpose)
+    print('grab  3d',grabpose_3D)
     droppose = ik.inverse(droppose_3D, neutral)[0]
+    print('droppose', droppose)
+    print('drop  3d',droppose_3D)
     block = ik.inverse(robotag, grabpose)[0]
+    print('block', block)
+    print("block 3d", robotag)
 
 
 
