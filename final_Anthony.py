@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # Master Loop
 
     #Create
-    arm.open_gripper()
+    reset()
     for i in [1,2,3,4]:
         print("go get block")
         go_grab(blocks_q[i])
