@@ -52,7 +52,7 @@ def reset():
     arm.open_gripper()
 
 def go_grab(q):
-    arm.safe_move_to_position(arm.neutral_position(q))
+    arm.safe_move_to_position(q)
     arm.exec_gripper_command(0.045,10)
 
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # Master Loop
 
     #Create
-
+    arm.open_gripper()
     for i in [1,2,3,4]:
         print("go get block")
         go_grab(blocks_q[i])
