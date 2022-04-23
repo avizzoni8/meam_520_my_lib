@@ -109,7 +109,7 @@ if __name__ == "__main__":
     droppose_3D = np.array([
         [1, 0, 0, 0.562],
         [0, -1, 0, -0.169],
-        [0, 0, -1, 0.3], #Starts at 0.2+0.005*X
+        [0, 0, -1, 0.45], #Starts at 0.2+0.005*X
         [0, 0, 0, 1],
     ])
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     blocks_q = []
     for i in [1,2,3,4]:
         tag_rf = get_robo_frame(detector.get_detections()[i][1])
-        tag_rf = tag_rf@np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
         blocks_q += [ik.inverse(tag_rf, grabpose)[0]]
 
 
@@ -141,6 +141,7 @@ if __name__ == "__main__":
         arm.safe_move_to_position(arm.neutral_position())
         print("go to drop")
         stack(i,arm.neutral_position()) #will stack block
+        arm.safe_move_to_position(droppose)
 
     """Dynamic Loop?"""
 
