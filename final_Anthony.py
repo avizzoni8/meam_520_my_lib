@@ -45,7 +45,7 @@ def stack(i,cur_q):
 
     q = ik.inverse(droppose_3D, cur_q)[0]
     arm.safe_move_to_position(q)
-    arm.exec_gripper_cmd(0.06)
+    arm.exec_gripper_cmd(0.1)
 
 def reset():
     arm.safe_move_to_position(arm.neutral_position())
@@ -143,6 +143,7 @@ if __name__ == "__main__":
         print("go to drop")
         stack(i,arm.neutral_position()) #will stack block
         arm.safe_move_to_position(droppose)
+        arm.safe_move_to_position(grabpose)
 
     """Dynamic Loop?"""
 
