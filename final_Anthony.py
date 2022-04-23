@@ -87,13 +87,6 @@ if __name__ == "__main__":
     '''for (name, pose) in detector.get_detections():
          print(name,'\n',pose)
          if name != 'tag0':'''
-    (name, pose) = detector.get_detections()[0]
-    print(name,'\n',pose)
-    (name, pose) = detector.get_detections()[1]
-    print(name,'\n',pose)
-    print("robo frame \n", get_robo_frame(pose))
-    blocks = []
-
 
     # Move around...
 
@@ -103,8 +96,8 @@ if __name__ == "__main__":
     #neutral_3d = fk.forward(arm.neutral_position())[1]
     neutral = np.array([0, 0, 0, -np.pi / 2, 0, np.pi / 2, np.pi / 4])
     neutral_3d = fk.forward(neutral)[1]
-    print('neutral', neutral)
-    print('neutral 3d',neutral_3d)
+    #print('neutral', neutral)
+    #print('neutral 3d',neutral_3d)
     # TODO define drop pose and grab pose
     grabpose_3D = np.array([
         [1, 0, 0, 0.562],
