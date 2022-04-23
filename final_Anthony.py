@@ -121,12 +121,16 @@ if __name__ == "__main__":
     #print('droppose', droppose)
     #print('drop  3d',droppose_3D)
 
-    blocks_q = []
-    for i in [1,2,3,4]:
+    block_grab = []
+    block_hover =[]
+    for i in [0,1,2,3]:
         tag_rf = get_robo_frame(detector.get_detections()[i][1])
         tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
-        tag_rf = tag_rf@transform([0,0,0.0135],[0,0,0])
-        blocks_q += [ik.inverse(tag_rf, grabpose)[0]]
+        tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
+        block_hover += [ik.inverse(tag_rf, grabpose)[0]]
+
+        tag_rf = tag_rf@transform([0,0,0.0375],[0,0,0])
+        block_grab += [ik.inverse(tag_rf,block_hover[i])]
 
 
 
@@ -134,16 +138,16 @@ if __name__ == "__main__":
 
     #Create
     reset()
-    for i in [1,2,3,4]:
+    for i in [0,1,2,3]:
         print("go get block")
-        go_grab(blocks_q[i])
+        arm.safe_move_to_position(block_hover[i])
+        go_grab(block_grab[i])
         """grab function - need to fix orientation"""
         print("neutral")
         arm.safe_move_to_position(arm.neutral_position())
         print("go to drop")
-        stack(i,arm.neutral_position()) #will stack block
+        stack(i+1,arm.neutral_position()) #will stack block
         arm.safe_move_to_position(droppose)
-        arm.safe_move_to_position(grabpose)
 
     """Dynamic Loop?"""
 
