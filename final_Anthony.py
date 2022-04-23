@@ -125,6 +125,7 @@ if __name__ == "__main__":
     for i in [1,2,3,4]:
         tag_rf = get_robo_frame(detector.get_detections()[i][1])
         tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
+        tag_rf = tag_rf@transform([0,0,0.0125],[0,0,0])
         blocks_q += [ik.inverse(tag_rf, grabpose)[0]]
 
 
