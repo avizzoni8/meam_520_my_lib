@@ -33,7 +33,7 @@ def get_robo_frame(tag):
     pose0 = detector.get_detections()[0][1]
     h = pose0@transform([0.5, 0, 0], [0, 0, 0])
     h = h@tag
-    return h@transform([0, 0, 0.05], [0, 0, 0])
+    return h
 
 def stack(i,cur_q):
     droppose_3D = np.array([
@@ -46,6 +46,15 @@ def stack(i,cur_q):
     q = ik.inverse(droppose_3D, cur_q)[0]
     arm.safe_move_to_position(q)
     arm.open_gripper()
+
+def reset():
+    arm.safe_move_to_position(arm.neutral_position())
+    arm.open_gripper()
+
+def go_grab(q)
+    arm.safe_move_to_position(arm.neutral_position(q))
+    arm.exec_gripper_command(0.045,10)
+
 
 
 
@@ -83,11 +92,7 @@ if __name__ == "__main__":
     (name, pose) = detector.get_detections()[1]
     print(name,'\n',pose)
     print("robo frame \n", get_robo_frame(pose))
-
-    robotag = get_robo_frame(detector.get_detections()[1][1])@np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
-
-
-    #TODO use inverse and matrix composition to get tags in robot frame
+    blocks = []
 
 
     # Move around...
@@ -117,15 +122,16 @@ if __name__ == "__main__":
 
     # now get them in configuration space:
     grabpose = ik.inverse(grabpose_3D, neutral)[0]
-    print('grabpose', grabpose)
-    print('grab  3d',grabpose_3D)
+    #print('grabpose', grabpose)
+    #print('grab  3d',grabpose_3D)
     droppose = ik.inverse(droppose_3D, neutral)[0]
-    print('droppose', droppose)
-    print('drop  3d',droppose_3D)
-    blocks = []
-    blocks += [ik.inverse(robotag, grabpose)[0]]
-    print('block', block)
-    print("block 3d", robotag)
+    #print('droppose', droppose)
+    #print('drop  3d',droppose_3D)
+
+    for i in [1,2,3,4]:
+        tag_rf = get_robo_frame(detector.get_detections()[i][1])
+        tag_rf = tag_rf@np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        blocks_q += [ik.inverse(tag_rf, grabpose)[0]]
 
 
 
@@ -134,13 +140,13 @@ if __name__ == "__main__":
     #Create
 
     for i in [1,2,3,4]:
-        print("going to test block")
-        arm.safe_move_to_position(blocks[i])
+        print("go get block")
+        go_grab(blocks[i])
         """grab function - need to fix orientation"""
-        print("reset and orientate with tag6 up")
-        #arm.safe_move_to_position(arm.neutral_position())
+        print("neutral")
+        arm.safe_move_to_position(arm.neutral_position())
         print("go to drop")
-        stack(i,q) #will stack block
+        stack(i,arm.neutral_position()) #will stack block
 
     """Dynamic Loop?"""
 
