@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     for i in [1,2,3,4]:
         print("go get block")
-        go_grab(blocks[i])
+        go_grab(blocks_q[i])
         """grab function - need to fix orientation"""
         print("neutral")
         arm.safe_move_to_position(arm.neutral_position())
