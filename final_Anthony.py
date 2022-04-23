@@ -51,7 +51,7 @@ def reset():
     arm.safe_move_to_position(arm.neutral_position())
     arm.open_gripper()
 
-def go_grab(q)
+def go_grab(q):
     arm.safe_move_to_position(arm.neutral_position(q))
     arm.exec_gripper_command(0.045,10)
 
