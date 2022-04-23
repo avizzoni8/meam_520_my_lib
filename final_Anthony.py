@@ -128,6 +128,7 @@ if __name__ == "__main__":
     #print('droppose', droppose)
     #print('drop  3d',droppose_3D)
 
+    blocks_q = []
     for i in [1,2,3,4]:
         tag_rf = get_robo_frame(detector.get_detections()[i][1])
         tag_rf = tag_rf@np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
