@@ -130,7 +130,7 @@ if __name__ == "__main__":
         block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
         tag_rf = tag_rf@transform([0,0,0.037],[0,0,0])
-        block_grab += [ik.inverse(tag_rf,block_hover[i])]
+        block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
 
 
 
