@@ -45,15 +45,15 @@ def stack(i,cur_q):
 
     q = ik.inverse(droppose_3D, cur_q)[0]
     arm.safe_move_to_position(q)
-    arm.exec_gripper_command(0.06)
+    arm.exec_gripper_cmd(0.06)
 
 def reset():
     arm.safe_move_to_position(arm.neutral_position())
-    arm.exec_gripper_command(0.06)
+    arm.exec_gripper_cmd(0.06)
 
 def go_grab(q):
     arm.safe_move_to_position(q)
-    arm.exec_gripper_command(0.045,10)
+    arm.exec_gripper_cmd(0.045,10)
 
 
 
