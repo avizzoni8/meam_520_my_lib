@@ -118,12 +118,14 @@ if __name__ == "__main__":
     ])
 
     droppose_3D = np.array([
-        [1, 0, 0, 0.562-0.075],
-        [0, -1, 0, -0.169+0.075],
-        [0, 0, -1, 0.45], #Starts at 0.2+0.005*X
+        [0, 1, 0, 0.562-0.075],
+        [0, 0, 1, -0.169+0.075],
+        [1, 0, 0, 0.45], #Starts at 0.2+0.005*X
         [0, 0, 0, 1],
     ])
-
+x -y
+x- z
+z - y
     # now get them in configuration space:
     grabpose = ik.inverse(grabpose_3D, neutral)[0]
     #print('grabpose', grabpose)
