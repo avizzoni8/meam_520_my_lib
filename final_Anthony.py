@@ -192,7 +192,7 @@ if __name__ == "__main__":
         elif name == 'tag5':
             '''run tag5 reset function - Alex'''
 
-        elif np.arcos(block_hover[i][0,0]) == np.pi/4:
+        elif abs(np.arccos(block_hover[i][0,0])) < np.pi/4+0.01 and abs(np.arccos(block_hover[i][0,0])) > np.pi/4 + 0.01 :
             print("Tag 6 at bad angle")
             #tag 6 kind of facing us
             #need to rotate around z to not exceed joint limits
