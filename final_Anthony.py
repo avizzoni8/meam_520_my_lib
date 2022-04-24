@@ -49,7 +49,7 @@ def stack(i,cur_q):
 
 def reset():
     arm.safe_move_to_position(arm.neutral_position())
-    arm.exec_gripper_cmd(0.06)
+    arm.exec_gripper_cmd(0.08)
 
 def go_grab(q):
     arm.safe_move_to_position(q)
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
         block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
-        tag_rf = tag_rf@transform([0,0,0.037],[0,0,0])
+        tag_rf = tag_rf@transform([0,0,0.035],[0,0,0])
         block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
 
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     # Master Loop
 
     #Create
-    reset()
+    """reset()
     for i in [0,1,2,3]:
         print("go get block")
         arm.safe_move_to_position(block_hover[i])
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         arm.safe_move_to_position(arm.neutral_position())
         print("go to drop")
         stack(i+1,arm.neutral_position()) #will stack block
-        arm.safe_move_to_position(droppose)
+        arm.safe_move_to_position(droppose)"""
 
     """Dynamic Loop?"""
 
