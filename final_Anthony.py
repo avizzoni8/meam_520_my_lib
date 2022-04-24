@@ -187,8 +187,9 @@ if __name__ == "__main__":
         (name, pose) = detector.get_detections()[i+1]
 
         '''if name == 'tag5':
-            '''run tag5 reset function - Alex'''
+            run tag5 reset function - Alex
             pass'''
+
 
         print("go get block")
         arm.safe_move_to_position(block_hover[i])
