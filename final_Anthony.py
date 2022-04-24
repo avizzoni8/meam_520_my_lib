@@ -124,8 +124,8 @@ if __name__ == "__main__":
     block_grab = []
     block_hover =[]
     for i in [0,1,2,3]:
-        print('tag \n', get_detections()[i][1])
-        tag_rf = get_robo_frame(detector.get_detections()[i][1])
+        print('tag \n', get_detections()[i+1][1])
+        tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
         print('robo frame \n', tag_rf)
         tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
         print("point z down \n", tag_rf)
