@@ -25,8 +25,7 @@ from loadmap import loadmap
 
 #TODO make sure we can do this for blue AND red - its just flipping grab and drop
 
-# TODO reset:drop - go to neutral and reorientate
-#TODO tag check to make sure tag6 isn't face down
+#TODO tag6 drop and tag5 drop
 
 #TODO: Get tag6 function
 #TODO: rotate end effector to tag6 orientation
@@ -39,11 +38,49 @@ def get_robo_frame(tag):
     h = h@tag
     return h
 
+grabpose_3D = np.array([
+        [1, 0, 0, 0.562],
+        [0, -1, 0, 0.169],
+        [0, 0, -1, 0.3],
+        [0, 0, 0, 1],
+    ])
+
+droppose_3D = np.array([
+        [0, 1, 0, 0.562-0.075],
+        [0, 0, 1, -0.169+0.075],
+        [1, 0, 0, 0.45], #Starts at 0.2+0.005*X
+        [0, 0, 0, 1],
+    ])
+
 def stack(i,cur_q):
     droppose_3D = np.array([
         [0, 1, 0, 0.562-0.075],
         [0, 0, 1, -0.169+0.075],
         [1, 0, 0, 0.2+0.05*i], #Starts at 0.2+0.005*X
+        [0, 0, 0, 1],
+    ])
+
+    q = ik.inverse(droppose_3D, cur_q)[0]
+    arm.safe_move_to_position(q)
+    arm.exec_gripper_cmd(0.1)
+
+def stack_badangle(i,cur_q):
+    droppose_3D = np.array([
+        [0, 1, 0, 0.562-0.075],
+        [0, 0, -1, -0.169+0.075],
+        [-1, 0, 0, 0.2+0.05*i], #Starts at 0.2+0.005*X
+        [0, 0, 0, 1],
+    ])
+
+    q = ik.inverse(droppose_3D, cur_q)[0]
+    arm.safe_move_to_position(q)
+    arm.exec_gripper_cmd(0.1)
+
+def stack_6up(i,cur_q):
+    droppose_3D = np.array([
+        [1, 0, 0, 0.562-0.075],
+        [0, -1, 1, -0.169+0.075],
+        [1, 0, -1, 0.2+0.05*i], #Starts at 0.2+0.005*X
         [0, 0, 0, 1],
     ])
 
@@ -58,13 +95,6 @@ def reset():
 def go_grab(q):
     arm.safe_move_to_position(q)
     arm.exec_gripper_cmd(0.045,10)
-
-'''def get_tag6_R(i):
-    r = tag6_list[i]
-    r[:,3] = np.array([0,0,0,1])
-    arm.safe_move_to_position(arm)'''
-
-
 
 
 
@@ -105,24 +135,7 @@ if __name__ == "__main__":
     #neutral = arm.neutral_position()
     #neutral_3d = fk.forward(arm.neutral_position())[1]
     neutral = np.array([0, 0, 0, -np.pi / 2, 0, np.pi / 2, np.pi / 4])
-    neutral_3d = fk.forward(neutral)[1]@transform([0, 0, 0], [0, 0, -np.pi/2])
-    neutral_3d = neutral_3d@transform([0,0,0],[0,np.pi/2,0])
-    #print('neutral', neutral)
-    #print('neutral 3d',neutral_3d)
-    # TODO define drop pose and grab pose
-    grabpose_3D = np.array([
-        [1, 0, 0, 0.562],
-        [0, -1, 0, 0.169],
-        [0, 0, -1, 0.3],
-        [0, 0, 0, 1],
-    ])
-
-    droppose_3D = np.array([
-        [0, 1, 0, 0.562-0.075],
-        [0, 0, 1, -0.169+0.075],
-        [1, 0, 0, 0.45], #Starts at 0.2+0.005*X
-        [0, 0, 0, 1],
-    ])
+    neutral_3d = fk.forward(neutral)[1]
 
     # now get them in configuration space:
     grabpose = ik.inverse(grabpose_3D, neutral)[0]
@@ -131,23 +144,28 @@ if __name__ == "__main__":
     droppose = ik.inverse(droppose_3D, neutral)[0]
     #print('droppose', droppose)
     #print('drop  3d',droppose_3D)
-    neutral_t6 = ik.inverse(neutral_3d, neutral)[0]
+    #neutral_t6 = ik.inverse(neutral_3d, neutral)[0]
 
     block_grab = []
     block_hover =[]
     for i in [0,1,2,3]:
         print('tag \n', detector.get_detections()[i+1][1])
+
         tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
         print('robo frame \n', tag_rf)
+
         tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
         tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
         print("point z down \n", tag_rf)
+
         tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
         print("hover \n", tag_rf)
+        #turn it into Q space
         block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
         tag_rf = tag_rf@transform([0,0,0.035],[0,0,0])
         print("down to grab \n", tag_rf)
+        #Turn it into Q space
         block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
 
 
@@ -157,15 +175,49 @@ if __name__ == "__main__":
     #Create
     reset()
     for i in [0,1,2,3]:
-        print("go get block")
-        arm.safe_move_to_position(block_hover[i])
-        go_grab(block_grab[i])
-        '''grab function - need to fix orientation'''
-        print("neutral")
-        arm.safe_move_to_position(neutral_t6)
-        print("go to drop")
-        stack(i+1,arm.neutral_position()) #will stack block
-        arm.safe_move_to_position(droppose)
+        (name, pose) = detector.get_detections()[i+1]
+
+        if name == 'tag6':
+            print("tag 6 up")
+            print("go get block")
+            arm.safe_move_to_position(block_hover[i])
+            go_grab(block_grab[i])
+            print("neutral")
+            arm.safe_move_to_position(neutral)
+            print("go to drop")
+            stack_6up(i + 1, arm.neutral_position())  # will stack block
+            arm.safe_move_to_position(droppose)
+            continue
+
+        elif name == 'tag5':
+            '''run tag5 reset function - Alex'''
+
+        elif np.arcos(block_hover[i][0,0]) == np.pi/4:
+            print("Tag 6 at bad angle")
+            #tag 6 kind of facing us
+            #need to rotate around z to not exceed joint limits
+            block_hover[i] = block_hover[i] @ transform([0, 0, 0], [0, 0, -np.pi])
+            block_grab[i] = block_grab[i] @ transform([0, 0, 0], [0, 0, -np.pi])
+            ##Now need to update drop pose - rotate z by 180
+            print("go get block")
+            arm.safe_move_to_position(block_hover[i])
+            go_grab(block_grab[i])
+            print("neutral")
+            arm.safe_move_to_position(neutral)
+            print("go to drop")
+            stack_badangle(i + 1, arm.neutral_position())  # will stack block
+            arm.safe_move_to_position(droppose)
+            continue
+
+        else:
+            print("go get block")
+            arm.safe_move_to_position(block_hover[i])
+            go_grab(block_grab[i])
+            print("neutral")
+            arm.safe_move_to_position(neutral)
+            print("go to drop")
+            stack(i+1,arm.neutral_position()) #will stack block
+            arm.safe_move_to_position(droppose)
 
     """Dynamic Loop?"""
 
