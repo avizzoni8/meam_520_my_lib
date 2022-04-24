@@ -13,7 +13,7 @@ from core.interfaces import ObjectDetector
 
 # for timing that is consistent with simulation or real time as appropriate
 from core.utils import time_in_seconds
-from core.utils import transform
+from core.utils import transform, roll, pitch, yaw
 
 # The library you implemented over the course of this semester!
 from calculateFK import FK
@@ -23,9 +23,13 @@ from solveIK import IK
 from loadmap import loadmap
 
 
-# TODO Drop down & Grab
-# TODO Move to drop pose and place block
+#TODO make sure we can do this for blue AND red - its just flipping grab and drop
+
 # TODO reset:drop - go to neutral and reorientate
+#TODO tag check to make sure tag6 isn't face down
+
+#TODO: Get tag6 function
+#TODO: rotate end effector to tag6 orientation
 # TODO reset:grab - go to neutral and reorientate
 
 
@@ -54,6 +58,12 @@ def reset():
 def go_grab(q):
     arm.safe_move_to_position(q)
     arm.exec_gripper_cmd(0.045,10)
+
+'''def get_tag6_R(i):
+    r = tag6_list[i]
+    r[:,3] = np.array([0,0,0,1])
+    arm.safe_move_to_position(arm)'''
+
 
 
 
@@ -95,7 +105,8 @@ if __name__ == "__main__":
     #neutral = arm.neutral_position()
     #neutral_3d = fk.forward(arm.neutral_position())[1]
     neutral = np.array([0, 0, 0, -np.pi / 2, 0, np.pi / 2, np.pi / 4])
-    neutral_3d = fk.forward(neutral)[1]
+    neutral_3d = fk.forward(neutral)[1]@transform([0, 0, 0], [0, 0, -np.pi/2])
+    neutral_3d = neutral_3d@transform([0,0,0],[0,np.pi/2,0])
     #print('neutral', neutral)
     #print('neutral 3d',neutral_3d)
     # TODO define drop pose and grab pose
@@ -120,6 +131,7 @@ if __name__ == "__main__":
     droppose = ik.inverse(droppose_3D, neutral)[0]
     #print('droppose', droppose)
     #print('drop  3d',droppose_3D)
+    neutral_t6 = ik.inverse(neutral_3d, neutral)[0]
 
     block_grab = []
     block_hover =[]
@@ -128,11 +140,11 @@ if __name__ == "__main__":
         tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
         print('robo frame \n', tag_rf)
         tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
+        tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
         print("point z down \n", tag_rf)
         tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
         print("hover \n", tag_rf)
         block_hover += [ik.inverse(tag_rf, grabpose)[0]]
-
 
         tag_rf = tag_rf@transform([0,0,0.035],[0,0,0])
         print("down to grab \n", tag_rf)
@@ -150,7 +162,7 @@ if __name__ == "__main__":
         go_grab(block_grab[i])
         '''grab function - need to fix orientation'''
         print("neutral")
-        arm.safe_move_to_position(arm.neutral_position())
+        arm.safe_move_to_position(neutral_t6)
         print("go to drop")
         stack(i+1,arm.neutral_position()) #will stack block
         arm.safe_move_to_position(droppose)
