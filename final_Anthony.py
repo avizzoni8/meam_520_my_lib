@@ -137,17 +137,17 @@ if __name__ == "__main__":
     # Master Loop
 
     #Create
-    """reset()
+    reset()
     for i in [0,1,2,3]:
         print("go get block")
         arm.safe_move_to_position(block_hover[i])
         go_grab(block_grab[i])
-        """grab function - need to fix orientation"""
+        '''grab function - need to fix orientation'''
         print("neutral")
         arm.safe_move_to_position(arm.neutral_position())
         print("go to drop")
         stack(i+1,arm.neutral_position()) #will stack block
-        arm.safe_move_to_position(droppose)"""
+        arm.safe_move_to_position(droppose)
 
     """Dynamic Loop?"""
 
