@@ -148,8 +148,10 @@ if __name__ == "__main__":
 
     block_grab = []
     block_hover =[]
+    case =[]
     for i in [0,1,2,3]:
         print('tag \n', detector.get_detections()[i+1][1])
+        (name, pose) = detector.get_detections()[i+1]
 
         tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
         print('robo frame \n', tag_rf)
@@ -160,6 +162,12 @@ if __name__ == "__main__":
 
         tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
         print("hover \n", tag_rf)
+
+        if abs(np.arccos(tag_rf[0, 0])) < np.pi / 4 + 0.01:
+            if abs(np.arccos(tag_rf[0, 0])) > np.pi / 4 - 0.01:
+                case += ['badangle']
+                tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
+
         #turn it into Q space
         block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
@@ -167,6 +175,7 @@ if __name__ == "__main__":
         print("down to grab \n", tag_rf)
         #Turn it into Q space
         block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
+        case += [None]
 
 
 
@@ -177,44 +186,29 @@ if __name__ == "__main__":
     for i in [0,1,2,3]:
         (name, pose) = detector.get_detections()[i+1]
 
+        '''if name == 'tag5':
+            '''run tag5 reset function - Alex'''
+            pass'''
+
+        print("go get block")
+        arm.safe_move_to_position(block_hover[i])
+        go_grab(block_grab[i])
+        print("neutral")
+        arm.safe_move_to_position(neutral)
+
         if name == 'tag6':
             print("tag 6 up")
-            print("go get block")
-            arm.safe_move_to_position(block_hover[i])
-            go_grab(block_grab[i])
-            print("neutral")
-            arm.safe_move_to_position(neutral)
             print("go to drop")
             stack_6up(i + 1, arm.neutral_position())  # will stack block
             arm.safe_move_to_position(droppose)
             continue
 
-        elif name == 'tag5':
-            '''run tag5 reset function - Alex'''
-
-        elif abs(np.arccos(block_hover[i][0,0])) < np.pi/4+0.01 and abs(np.arccos(block_hover[i][0,0])) > np.pi/4 + 0.01 :
-            print("Tag 6 at bad angle")
-            #tag 6 kind of facing us
-            #need to rotate around z to not exceed joint limits
-            block_hover[i] = block_hover[i] @ transform([0, 0, 0], [0, 0, -np.pi])
-            block_grab[i] = block_grab[i] @ transform([0, 0, 0], [0, 0, -np.pi])
-            ##Now need to update drop pose - rotate z by 180
-            print("go get block")
-            arm.safe_move_to_position(block_hover[i])
-            go_grab(block_grab[i])
-            print("neutral")
-            arm.safe_move_to_position(neutral)
-            print("go to drop")
-            stack_badangle(i + 1, arm.neutral_position())  # will stack block
+        elif case[i] == 'badangle':
+            stack_badangle(i+1, arm.neutral_position())  # will stack block
             arm.safe_move_to_position(droppose)
             continue
 
         else:
-            print("go get block")
-            arm.safe_move_to_position(block_hover[i])
-            go_grab(block_grab[i])
-            print("neutral")
-            arm.safe_move_to_position(neutral)
             print("go to drop")
             stack(i+1,arm.neutral_position()) #will stack block
             arm.safe_move_to_position(droppose)
