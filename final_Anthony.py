@@ -16,20 +16,13 @@ from core.utils import time_in_seconds
 from core.utils import transform, roll, pitch, yaw
 
 # The library you implemented over the course of this semester!
-from calculateFK import FK
-from calcJacobian import FK
-from solveIK import IK
+from lib.calculateFK import FK
+from lib.calcJacobian import FK
+from lib.solveIK import IK
 #from rrt import rrt
-from loadmap import loadmap
 
 
 #TODO make sure we can do this for blue AND red - its just flipping grab and drop
-
-#TODO tag6 drop and tag5 drop
-
-#TODO: Get tag6 function
-#TODO: rotate end effector to tag6 orientation
-# TODO reset:grab - go to neutral and reorientate
 
 
 def get_robo_frame(tag):
@@ -150,32 +143,29 @@ if __name__ == "__main__":
     block_hover =[]
     case =[]
     for i in [0,1,2,3]:
-        print('tag \n', detector.get_detections()[i+1][1])
-        (name, pose) = detector.get_detections()[i+1]
-
-        tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
-        print('robo frame \n', tag_rf)
-
-        tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
-        tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
-        print("point z down \n", tag_rf)
-
-        tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
-        print("hover \n", tag_rf)
-
-        if np.arccos(tag_rf[0, 0]) < np.pi / 4 + 0.01:
-            if np.arccos(tag_rf[0, 0]) > np.pi / 4 - 0.01:
-                case += ['badangle']
-                tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
+    	(name, pose) = detector.get_detections()[i+1]
+    	print(name, "\n", pose)
+    	tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
+    	print('robo frame \n', tag_rf)
+    	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
+    	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
+    	print("point z down \n", tag_rf)
+    	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
+    	print("hover \n", tag_rf)
+	
+	if np.arccos(tag_rf[0, 0]) > np.pi-0.01:
+		if np.arccos(tag_rf[0, 0]) > 3*np.pi/4+0.01 :
+			case += ['badangle']
+			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
         #turn it into Q space
-        block_hover += [ik.inverse(tag_rf, grabpose)[0]]
+	block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
-        tag_rf = tag_rf@transform([0,0,0.035],[0,0,0])
-        print("down to grab \n", tag_rf)
+	tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
+	print("down to grab \n", tag_rf)
         #Turn it into Q space
-        block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
-        case += [None]
+	block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
+	case += [None]
 
 
 
@@ -211,7 +201,7 @@ if __name__ == "__main__":
 
         else:
             print("go to drop")
-            stack(i+1,arm.neutral_position()) #will stack block
+            stack_badangle(i+1,arm.neutral_position()) #will stack block
             arm.safe_move_to_position(droppose)
 
     """Dynamic Loop?"""
