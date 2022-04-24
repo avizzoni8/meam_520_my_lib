@@ -163,8 +163,8 @@ if __name__ == "__main__":
         tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
         print("hover \n", tag_rf)
 
-        if abs(np.arccos(tag_rf[0, 0])) < np.pi / 4 + 0.01:
-            if abs(np.arccos(tag_rf[0, 0])) > np.pi / 4 - 0.01:
+        if np.arccos(tag_rf[0, 0]) < np.pi / 4 + 0.01:
+            if np.arccos(tag_rf[0, 0]) > np.pi / 4 - 0.01:
                 case += ['badangle']
                 tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
