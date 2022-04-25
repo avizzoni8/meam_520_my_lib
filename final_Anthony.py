@@ -25,12 +25,6 @@ from lib.solveIK import IK
 #TODO make sure we can do this for blue AND red - its just flipping grab and drop
 
 
-def get_robo_frame(tag):
-	pose0 = detector.get_detections()[0][1]
-	h = pose0@transform([0.5, 0, 0], [0, 0, 0])
-	h = h@tag
-	return h
-
 grabpose_3D = np.array([
 		[1, 0, 0, 0.562],
 		[0, -1, 0, 0.169],
@@ -39,16 +33,22 @@ grabpose_3D = np.array([
 	])
 
 droppose_3D = np.array([
-		[0, 1, 0, 0.562-0.075],
-		[0, 0, 1, -0.169+0.075],
+		[0, 1, 0, 0.562],
+		[0, 0, 1, -0.169],
 		[1, 0, 0, 0.45], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
 
+def get_robo_frame(tag):
+	pose0 = detector.get_detections()[0][1]
+	h = pose0@transform([0.5, 0, 0], [0, 0, 0])
+	h = h@tag
+	return h
+
 def stack(i,cur_q):
 	droppose_3D = np.array([
-		[0, 1, 0, 0.562-0.075],
-		[0, 0, 1, -0.169+0.075],
+		[0, 1, 0, 0.562],
+		[0, 0, 1, -0.169],
 		[1, 0, 0, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
@@ -59,8 +59,8 @@ def stack(i,cur_q):
 
 def stack_badangle(i,cur_q):
 	droppose_3D = np.array([
-		[0, 1, 0, 0.562-0.075],
-		[0, 0, -1, -0.169+0.075],
+		[0, 1, 0, 0.562],
+		[0, 0, -1, -0.169],
 		[-1, 0, 0, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
@@ -71,8 +71,8 @@ def stack_badangle(i,cur_q):
 
 def stack_6up(i,cur_q):
 	droppose_3D = np.array([
-		[1, 0, 0, 0.562-0.075],
-		[0, -1, 0, -0.169+0.075],
+		[1, 0, 0, 0.562],
+		[0, -1, 0, -0.169],
 		[0, 0, -1, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
@@ -86,21 +86,13 @@ def tag5_function(i):
 	go_grab(block_grab[i])
 	arm.safe_move_to_position(block_hover[i])
 
-	'''	
-	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi, 0])
-	tag_rf2 = tag_rf2 @ transform([0, 0, -0.025], [0, 0, 0])
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0.035], [0, 0, 0])
-	# move up
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])
-	'''
-	#rotate
+	#recreate hover location in 3D then rotate
 	tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
 	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/2, 0])
-	tag5_rotated = ik.inverse(tag_rf, block_grab[i])[0]
+	tag5_rotated = ik.inverse(tag_rf, block_hover[i])[0]
 
 	arm.safe_move_to_position(tag5_rotated)
 	arm.exec_gripper_cmd(0.1)
@@ -177,7 +169,7 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 	
-		if tag_rf[0, 0]<0:
+		if tag_rf[0, 0]<0: #Needs to be fixed
 			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
 			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
 			case += ['badangle']
@@ -201,9 +193,9 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = detector.get_detections()[i+1]
 
-		#if name == 'tag5':
-		tag5_function(i)
-			#pass
+		if name == 'tag5':
+			tag5_function(i)
+			pass
 
 
 		print("go get block")
@@ -212,7 +204,7 @@ if __name__ == "__main__":
 		print("neutral")
 		arm.safe_move_to_position(neutral)
 
-		"""if name == 'tag6':
+		if name == 'tag6':
 			print("tag 6 up")
 			print("go to drop")
 			stack_6up(i, arm.neutral_position())  # will stack block
@@ -226,10 +218,10 @@ if __name__ == "__main__":
 			arm.safe_move_to_position(neutral)
 			continue
 
-		else:"""
-		print("go to drop")
-		stack(i,arm.neutral_position()) #will stack block
-		arm.safe_move_to_position(neutral)
+		else:
+			print("go to drop")
+			stack(i,arm.neutral_position()) #will stack block
+			arm.safe_move_to_position(neutral)
 
 	"""Dynamic Loop?"""
 
