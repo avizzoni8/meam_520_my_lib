@@ -99,8 +99,8 @@ def tag5_function(i):
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
 	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi/2, 0])
-	tag5_rotated = ik.inverse(tag_rf2, block_grab[i])[0]
+	tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/2, 0])
+	tag5_rotated = ik.inverse(tag_rf, block_grab[i])[0]
 
 	arm.safe_move_to_position(tag5_rotated)
 	arm.exec_gripper_cmd(0.1)
