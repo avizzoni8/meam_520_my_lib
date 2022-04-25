@@ -81,6 +81,23 @@ def stack_6up(i,cur_q):
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
 
+def tag5_function(i):
+	arm.safe_move_to_position(block_hover[i])
+	go_grab(block_grab[i])
+
+	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi, 0])
+	tag_rf2 = tag_rf2 @ transform([0, 0, -0.025], [0, 0, 0])
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0.035], [0, 0, 0])
+	# move up
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])
+	# rotate
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi / 2, 0])
+	tag5_rotated += [ik.inverse(tag_rf2, block_grab[i])[0]]
+
+	arm.safe_move_to_position(arm.tag5_rotated[i])
+	arm.exec_gripper_cmd(0.1)
+
 def reset():
 	arm.safe_move_to_position(arm.neutral_position())
 	arm.exec_gripper_cmd(0.08)
@@ -153,19 +170,19 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		print("hover \n", tag_rf)
 	
-	if np.arccos(tag_rf[0, 0]) > np.pi-0.01:
-		if np.arccos(tag_rf[0, 0]) > 3*np.pi/4+0.01 :
-			case += ['badangle']
-			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
+		if np.arccos(tag_rf[0, 0]) > np.pi-0.01:
+			if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
+				case += ['badangle']
+				tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
-		#turn it into Q space
-	block_hover += [ik.inverse(tag_rf, grabpose)[0]]
+			#turn it into Q space
+		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
-	tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
-	print("down to grab \n", tag_rf)
-		#Turn it into Q space
-	block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
-	case += [None]
+		tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
+		print("down to grab \n", tag_rf)
+			#Turn it into Q space
+		block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
+		case += [None]
 
 
 
@@ -176,9 +193,9 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = detector.get_detections()[i+1]
 
-		'''if name == 'tag5':
-			run tag5 reset function - Alex
-			pass'''
+		if name == 'tag5':
+			tag5_function(i)
+			pass
 
 
 		print("go get block")
@@ -191,18 +208,20 @@ if __name__ == "__main__":
 			print("tag 6 up")
 			print("go to drop")
 			stack_6up(i + 1, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(droppose)
+			arm.safe_move_to_position(neutral)
 			continue
 
 		elif case[i] == 'badangle':
+			print("Tag 6 pointed at robot")
+			print("go to drop")
 			stack_badangle(i+1, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(droppose)
+			arm.safe_move_to_position(neutral)
 			continue
 
 		else:
 			print("go to drop")
-			stack_badangle(i+1,arm.neutral_position()) #will stack block
-			arm.safe_move_to_position(droppose)
+			stack(i+1,arm.neutral_position()) #will stack block
+			arm.safe_move_to_position(neutral)
 
 	"""Dynamic Loop?"""
 
