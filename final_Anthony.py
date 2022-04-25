@@ -84,18 +84,23 @@ def stack_6up(i,cur_q):
 def tag5_function(i):
 	arm.safe_move_to_position(block_hover[i])
 	go_grab(block_grab[i])
+	arm.safe_move_to_position(block_hover[i])
 
-	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
+'''	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi, 0])
 	tag_rf2 = tag_rf2 @ transform([0, 0, -0.025], [0, 0, 0])
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0.035], [0, 0, 0])
 	# move up
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])'''
 	# rotate
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi / 2, 0])
+	tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
+	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
+	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
+	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi/2, 0])
 	tag5_rotated = ik.inverse(tag_rf2, block_grab[i])[0]
 
-	arm.safe_move_to_position(tag5_rotated[i])
+	arm.safe_move_to_position(tag5_rotated)
 	arm.exec_gripper_cmd(0.1)
 
 def reset():
@@ -194,9 +199,9 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = detector.get_detections()[i+1]
 
-		if name == 'tag5':
-			tag5_function(i)
-			pass
+		#if name == 'tag5':
+		tag5_function(i)
+			#pass
 
 
 		print("go get block")
@@ -205,7 +210,7 @@ if __name__ == "__main__":
 		print("neutral")
 		arm.safe_move_to_position(neutral)
 
-		if name == 'tag6':
+		"""if name == 'tag6':
 			print("tag 6 up")
 			print("go to drop")
 			stack_6up(i, arm.neutral_position())  # will stack block
@@ -219,10 +224,10 @@ if __name__ == "__main__":
 			arm.safe_move_to_position(neutral)
 			continue
 
-		else:
-			print("go to drop")
-			stack(i,arm.neutral_position()) #will stack block
-			arm.safe_move_to_position(neutral)
+		else:"""
+		print("go to drop")
+		stack(i,arm.neutral_position()) #will stack block
+		arm.safe_move_to_position(neutral)
 
 	"""Dynamic Loop?"""
 
