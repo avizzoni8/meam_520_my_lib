@@ -93,9 +93,9 @@ def tag5_function(i):
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])
 	# rotate
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi / 2, 0])
-	tag5_rotated += [ik.inverse(tag_rf2, block_grab[i])[0]]
+	tag5_rotated = ik.inverse(tag_rf2, block_grab[i])[0]
 
-	arm.safe_move_to_position(arm.tag5_rotated[i])
+	arm.safe_move_to_position(tag5_rotated[i])
 	arm.exec_gripper_cmd(0.1)
 
 def reset():
@@ -170,10 +170,11 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 	
-		if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
-			if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
-				case += ['badangle']
-				tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
+		if tag_rf[0, 0]<0:
+			if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
+				if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
+					case += ['badangle']
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
 			#turn it into Q space
 		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
