@@ -163,12 +163,12 @@ if __name__ == "__main__":
 		(name, pose) = detector.get_detections()[i+1]
 		print(name, "\n", pose)
 		tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
-		print('robo frame \n', tag_rf)
+		#print('robo frame \n', tag_rf)
 		tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 		tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
-		print("point z down \n", tag_rf)
+		#print("point z down \n", tag_rf)
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
-		print("hover \n", tag_rf)
+		#print("hover \n", tag_rf)
 	
 		if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
 			if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
@@ -179,7 +179,7 @@ if __name__ == "__main__":
 		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
 		tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
-		print("down to grab \n", tag_rf)
+		print("grab pose \n", tag_rf)
 			#Turn it into Q space
 		block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
 		case += [None]
