@@ -178,10 +178,10 @@ if __name__ == "__main__":
 		#print("hover \n", tag_rf)
 	
 		if tag_rf[0, 0]<0:
-			if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
-				if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
-					case += ['badangle']
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
+			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
+			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
+			case += ['badangle']
+			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
 			#turn it into Q space
 		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
