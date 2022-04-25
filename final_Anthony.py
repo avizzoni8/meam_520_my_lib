@@ -49,7 +49,7 @@ def stack(i,cur_q):
 	droppose_3D = np.array([
 		[0, 1, 0, 0.562-0.075],
 		[0, 0, 1, -0.169+0.075],
-		[1, 0, 0, 0.2+0.05*i], #Starts at 0.2+0.005*X
+		[1, 0, 0, 0.205+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
 
@@ -61,7 +61,7 @@ def stack_badangle(i,cur_q):
 	droppose_3D = np.array([
 		[0, 1, 0, 0.562-0.075],
 		[0, 0, -1, -0.169+0.075],
-		[-1, 0, 0, 0.2+0.05*i], #Starts at 0.2+0.005*X
+		[-1, 0, 0, 0.205+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
 
@@ -73,7 +73,7 @@ def stack_6up(i,cur_q):
 	droppose_3D = np.array([
 		[1, 0, 0, 0.562-0.075],
 		[0, -1, 0, -0.169+0.075],
-		[0, 0, -1, 0.2+0.05*i], #Starts at 0.2+0.005*X
+		[0, 0, -1, 0.205+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
 
@@ -207,20 +207,20 @@ if __name__ == "__main__":
 		if name == 'tag6':
 			print("tag 6 up")
 			print("go to drop")
-			stack_6up(i + 1, arm.neutral_position())  # will stack block
+			stack_6up(i, arm.neutral_position())  # will stack block
 			arm.safe_move_to_position(neutral)
 			continue
 
 		elif case[i] == 'badangle':
 			print("Tag 6 pointed at robot")
 			print("go to drop")
-			stack_badangle(i+1, arm.neutral_position())  # will stack block
+			stack_badangle(i, arm.neutral_position())  # will stack block
 			arm.safe_move_to_position(neutral)
 			continue
 
 		else:
 			print("go to drop")
-			stack(i+1,arm.neutral_position()) #will stack block
+			stack(i,arm.neutral_position()) #will stack block
 			arm.safe_move_to_position(neutral)
 
 	"""Dynamic Loop?"""
