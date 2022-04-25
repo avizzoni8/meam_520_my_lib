@@ -86,13 +86,15 @@ def tag5_function(i):
 	go_grab(block_grab[i])
 	arm.safe_move_to_position(block_hover[i])
 
-'''	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
+	'''	
+	tag_rf2 = get_robo_frame(detector.get_detections()[i + 1][1])
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0], [0, np.pi, 0])
 	tag_rf2 = tag_rf2 @ transform([0, 0, -0.025], [0, 0, 0])
 	tag_rf2 = tag_rf2 @ transform([0, 0, 0.035], [0, 0, 0])
 	# move up
-	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])'''
-	# rotate
+	tag_rf2 = tag_rf2 @ transform([0, 0, 0.025], [0, 0, 0])
+	'''
+	#rotate
 	tag_rf = get_robo_frame(detector.get_detections()[i+1][1])
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
