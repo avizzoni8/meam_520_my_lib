@@ -131,10 +131,6 @@ if __name__ == "__main__":
 	rospy.init_node("team_script")
 	arm = ArmController()
 	detector = ObjectDetector()
-	for (name, pose) in detector.get_detections():
-		if name == "tag0":
-			print('found tag0')
-			pose0 = pose
 
 	arm.safe_move_to_position(arm.neutral_position()) # on your mark!
 
@@ -173,6 +169,11 @@ if __name__ == "__main__":
 	#neutral_t6 = ik.inverse(neutral_3d, neutral)[0]
 
 	staticblocks = static_tags()
+
+	for (name, pose) in detector.get_detections():
+		if name == 'tag0':
+			print('found tag0')
+			pose0 = pose
 
 	block_grab = []
 	block_hover =[]
