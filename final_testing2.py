@@ -117,7 +117,7 @@ def tag5_function(i):
 	drop_rotated_Q = ik.inverse(drop_rotated, grab_rotated_Q)[0]
 	arm.safe_move_to_position(drop_rotated_Q)
 	arm.exec_gripper_cmd(0.1)
-	
+
 def reset():
 	arm.safe_move_to_position(arm.neutral_position())
 	arm.exec_gripper_cmd(0.08)
@@ -237,9 +237,9 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
 
-		if name == 'tag5':
-			tag5_function(i)
-			pass
+		#if name == 'tag5':
+		tag5_function(i)
+			#pass
 
 
 		print("go get block")
