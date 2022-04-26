@@ -37,10 +37,6 @@ droppose_3D = np.array([
 		[0, 0, 0, 1],
 	])
 
-detector = ObjectDetector()
-for (name, pose) in detector.get_detections():
-	if name == "tag0":
-		pose0 = pose
 
 def get_robo_frame(pose0,tag):
 	#pose0 = detector.get_detections()[0][1]
@@ -112,10 +108,15 @@ def static_tags():
 	tags = []
 	for (name, pose) in detector.get_detections():
 		print('name is', name)
-		for i in ['tag0','tag7','tag8','tag9','tag10','tag11','tag12']:
-			if name != i:
-				print('add it to static blocks')
-				tags += [(name, pose)]
+		if name != 'tag0':
+			if name != 'tag7':
+				if name != 'tag8':
+					if name != 'tag9':
+						if name != 'tag10':
+							if name != 'tag11':
+								if name != 'tag12':
+									print('add it to static blocks')
+									tags += [(name, pose)]
 	return tags
 
 
@@ -132,7 +133,9 @@ if __name__ == "__main__":
 	detector = ObjectDetector()
 	for (name, pose) in detector.get_detections():
 		if name == "tag0":
+			print('found tag0')
 			pose0 = pose
+
 	arm.safe_move_to_position(arm.neutral_position()) # on your mark!
 
 	print("\n****************")
