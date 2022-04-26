@@ -37,6 +37,7 @@ droppose_3D = np.array([
 		[0, 0, 0, 1],
 	])
 
+detector = ObjectDetector()
 for (name, pose) in detector.get_detections():
 	if name == "tag0":
 		pose0 = pose
@@ -127,7 +128,9 @@ if __name__ == "__main__":
 	rospy.init_node("team_script")
 	arm = ArmController()
 	detector = ObjectDetector()
-
+	for (name, pose) in detector.get_detections():
+		if name == "tag0":
+			pose0 = pose
 	arm.safe_move_to_position(arm.neutral_position()) # on your mark!
 
 	print("\n****************")
