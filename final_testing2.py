@@ -221,9 +221,9 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
 
-		if name == 'tag5':
-			tag5_function(i)
-			pass
+		#if name == 'tag5':
+		tag5_function(i)
+			#pass
 
 
 		print("go get block")
