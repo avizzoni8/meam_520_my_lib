@@ -52,8 +52,6 @@ def stack(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
-	droppose_3D = droppose_3D @ transform([0, 0, 0], [0,0,-np.pi/4])
-
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
@@ -66,7 +64,8 @@ def stack_badangle(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
-	droppose_3D = droppose_3D@transform([0,0,0],[0,0,np.pi/4])
+	if i == 0:
+		droppose_3D = droppose_3D@transform([0,0,0],[0,0,np.pi/2])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
@@ -80,7 +79,6 @@ def stack_6up(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
-	droppose_3D = droppose_3D @ transform([0, 0, 0], [0,0,-np.pi/4])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
