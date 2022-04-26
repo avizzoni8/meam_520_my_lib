@@ -52,6 +52,8 @@ def stack(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
+	droppose_3D = droppose_3D @ transform([0, 0, 0], [pi / 4, 0, 0])
+
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
@@ -64,6 +66,8 @@ def stack_badangle(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
+	droppose_3D = droppose_3D@transform([0,0,0],[-pi/4,0,0])
+
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
@@ -75,6 +79,8 @@ def stack_6up(i,cur_q):
 		[0, 0, -1, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
+
+	droppose_3D = droppose_3D @ transform([0, 0, 0], [pi / 4, 0, 0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
@@ -101,7 +107,12 @@ def tag5_function(i):
 	tag_hover_rotated_2 = original_hover @ transform([0, 0, 0], [0, np.pi / 4, 0])
 	tag5_hover_rotated_Q_2 = ik.inverse(tag_hover_rotated_2, tag5_hover_rotated_Q_1)[0]
 
+	drop_rotated = original_hover @ transform([0, 0, 0.045], [0, 0, 0])
+	drop_rotated = grab_rotated @ transform([0, 0, 0], [0, np.pi / 4, 0])
+	tag5_drop_rotated_Q = ik.inverse(drop_rotated, block_grab[i])[0]
+
 	arm.safe_move_to_position(tag5_hover_rotated_Q_2)
+	arm.safe_move_to_position(tag5_drop_rotated_Q)
 	arm.exec_gripper_cmd(0.1)
 
 def reset():
