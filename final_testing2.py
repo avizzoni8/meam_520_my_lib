@@ -38,7 +38,7 @@ droppose_3D = np.array([
 	])
 
 for (name, pose) in detector.get_detections():
-    if name == "tag0":
+	if name == "tag0":
 		pose0 = pose
 
 def get_robo_frame(tag):
