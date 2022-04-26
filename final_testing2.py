@@ -42,7 +42,7 @@ for (name, pose) in detector.get_detections():
 	if name == "tag0":
 		pose0 = pose
 
-def get_robo_frame(tag):
+def get_robo_frame(pose0,tag):
 	#pose0 = detector.get_detections()[0][1]
 	h = pose0@transform([0.5, 0, 0], [0, 0, 0])
 	h = h@tag
@@ -90,7 +90,7 @@ def tag5_function(i):
 	arm.safe_move_to_position(block_hover[i])
 
 	#recreate hover location in 3D then rotate
-	tag_rf = get_robo_frame(staticblocks[i][1])
+	tag_rf = get_robo_frame(pose0,staticblocks[i][1])
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
 	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
@@ -111,9 +111,11 @@ def go_grab(q):
 def static_tags():
 	tags = []
 	for (name, pose) in detector.get_detections():
+		print('name is', name)
 		for i in ['tag0','tag7','tag8','tag9','tag10','tag11','tag12']:
 			if name != i:
-				tags +=[(name, pose)]
+				print('add it to static blocks')
+				tags += [(name, pose)]
 	return tags
 
 
@@ -175,7 +177,7 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
 		print(name, "\n", pose)
-		tag_rf = get_robo_frame(pose)
+		tag_rf = get_robo_frame(pose0,pose)
 		#print('robo frame \n', tag_rf)
 		tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 		tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
