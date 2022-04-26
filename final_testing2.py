@@ -209,6 +209,8 @@ if __name__ == "__main__":
 		if tag_rf[0, 0]<0: #Needs to be fixed
 			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
 			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
+			print("preprocessing - T6 pointed at robot ")
+			print("hover pose is\n", tag_rf)
 			case += ['badangle']
 			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, -np.pi])
 
