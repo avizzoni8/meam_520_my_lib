@@ -81,19 +81,27 @@ def stack_6up(i,cur_q):
 	arm.exec_gripper_cmd(0.1)
 
 def tag5_function(i):
-	arm.safe_move_to_position(block_hover[i])
-	go_grab(block_grab[i])
-	arm.safe_move_to_position(block_hover[i])
-
 	#recreate hover location in 3D then rotate
 	tag_rf = get_robo_frame(pose0,staticblocks[i][1])
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
-	tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
-	tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/2, 0])
-	tag5_rotated = ik.inverse(tag_rf, block_hover[i])[0]
+	original_hover = tag_rf@transform([0,0,-0.025],[0,0,0])
+	tag_hover_rotated_1 = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
+	tag5_hover_rotated_Q_1 = ik.inverse(tag_hover_rotated_1, block_hover[i])[0]
 
-	arm.safe_move_to_position(tag5_rotated)
+	grab_rotated = original_hover@transform([0,0,0.05],[0,0,0])
+	grab_rotated = grab_rotated @ transform([0, 0, 0], [0, -np.pi/4, 0])
+
+	grab_rotated_Q = ik.inverse(grab_rotated, tag5_hover_rotated_Q_1)[0]
+
+	arm.safe_move_to_position(tag5_hover_rotated_Q_1)
+	go_grab(grab_rotated_Q)
+	#now grabbed at 45 degree angle
+
+	tag_hover_rotated_2 = tag_hover_rotated_1 @ transform([0, 0, 0], [0, np.pi / 2, 0])
+	tag5_hover_rotated_Q_2 = ik.inverse(tag_hover_rotated_2, tag5_hover_rotated_Q_1)[0]
+
+	arm.safe_move_to_position(tag5_hover_rotated_Q_2)
 	arm.exec_gripper_cmd(0.1)
 
 def reset():
