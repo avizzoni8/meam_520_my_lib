@@ -98,7 +98,7 @@ def tag5_function(i):
 	go_grab(grab_rotated_Q)
 	#now grabbed at 45 degree angle
 
-	tag_hover_rotated_2 = tag_hover_rotated_1 @ transform([0, 0, 0], [0, np.pi / 2, 0])
+	tag_hover_rotated_2 = original_hover @ transform([0, 0, 0], [0, np.pi / 4, 0])
 	tag5_hover_rotated_Q_2 = ik.inverse(tag_hover_rotated_2, tag5_hover_rotated_Q_1)[0]
 
 	arm.safe_move_to_position(tag5_hover_rotated_Q_2)
