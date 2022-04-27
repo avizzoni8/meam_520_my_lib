@@ -107,19 +107,19 @@ def stack_6up(i,cur_q):
 	arm.exec_gripper_cmd(0.1)
 	arm.safe_move_to_position(qr)
 
-def tag5_function(i):
+def tag5_function(i,bh):
 	#recreate hover location in 3D then rotate
-	tag_rf = get_robo_frame(pose0,staticblocks[i][1])
+	'''	tag_rf = get_robo_frame(pose0,staticblocks[i][1])
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
-	original_hover = tag_rf@transform([0,0,-0.025],[0,0,0])
+	original_hover = tag_rf@transform([0,0,-0.025],[0,0,0])'''
 
 	#come in at an angle
-	hover_rotated_1 = original_hover @ transform([0, 0, 0], [0, -np.pi/4, 0])
+	hover_rotated_1 = bh @ transform([0, 0, 0], [0, -np.pi/4, 0])
 	hover_rotated_Q_1 = ik.inverse(hover_rotated_1, block_hover[i])[0]
 
 	#now move down
-	grab_rotated = original_hover@transform([0,0,0.05],[0,0,0])
+	grab_rotated = bh @transform([0,0,0.05],[0,0,0])
 	grab_rotated = grab_rotated @ transform([0, 0, 0], [0, -np.pi/4, 0])
 	grab_rotated_Q = ik.inverse(grab_rotated, hover_rotated_Q_1)[0]
 
@@ -128,19 +128,19 @@ def tag5_function(i):
 	#now grabbed at 45 degree angle
 
 	#now move up - still at an angle:
-	hover_rotated_2 = original_hover @ transform([0, 0, -0.025], [0, 0, 0])
+	hover_rotated_2 = bh @ transform([0, 0, -0.025], [0, 0, 0])
 	hover_rotated_2 = hover_rotated_2 @ transform([0, 0, 0], [0, -np.pi / 4, 0])
 	hover_rotated_Q_2 = ik.inverse(hover_rotated_2, block_hover[i])[0]
 	arm.safe_move_to_position(hover_rotated_Q_2)
 
 	#now rotate
-	hover_rotated_3 = original_hover @ transform([0, 0, -0.025], [0, 0, 0])
+	hover_rotated_3 = bh @ transform([0, 0, -0.025], [0, 0, 0])
 	hover_rotated_3 = hover_rotated_3 @ transform([0, 0, 0], [0, np.pi/4, 0])
 	hover_rotated_Q_3 = ik.inverse(hover_rotated_3, hover_rotated_Q_2)[0]
 	arm.safe_move_to_position(hover_rotated_Q_3)
 
 	#now move down and drop
-	drop_rotated = original_hover @ transform([0, 0, 0.045], [0, 0, 0])
+	drop_rotated = bh @ transform([0, 0, 0.045], [0, 0, 0])
 	drop_rotated = drop_rotated @ transform([0, 0, 0], [0, np.pi / 4, 0])
 	drop_rotated_Q = ik.inverse(drop_rotated, grab_rotated_Q)[0]
 	arm.safe_move_to_position(drop_rotated_Q)
@@ -222,6 +222,8 @@ if __name__ == "__main__":
 	#PREPROCESSING
 	block_grab = []
 	block_hover =[]
+	block_hover_3D = []
+	block_grab_3D = []
 	case =[]
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
@@ -242,11 +244,13 @@ if __name__ == "__main__":
 		else:
 			case += [None]
 
+		block_hover_3D += [tag_rf]
 		#turn it into Q space
 		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
 		#make grab pose
 		tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
+		block_grab_3D += [tag_rf]
 		print("grab pose \n", tag_rf)
 		#Turn it into Q space
 		block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
@@ -261,7 +265,7 @@ if __name__ == "__main__":
 		(name, pose) = staticblocks[i]
 
 		if name == 'tag5':
-			tag5_function(i)
+			tag5_function(i,block_hover_3D[i])
 			pass
 
 
