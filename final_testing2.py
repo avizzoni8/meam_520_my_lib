@@ -79,7 +79,7 @@ def stack_badangle(i,cur_q):
 	])
 
 	if i == 0:
-		droppose_3D = droppose_3D@transform([0,0,0],[0,0,np.pi/2])
+		droppose_3D = droppose_3D@transform([0,0,0],[-np.pi/2],0,0)
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
