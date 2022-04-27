@@ -133,7 +133,7 @@ def tag5_function(i,bh):
 	hover_rotated_Q_2 = ik.inverse(hover_rotated_2, block_hover[i])[0]
 	arm.safe_move_to_position(hover_rotated_Q_2)
 
-	#now rotate
+	#now rotate forward to show Tag6
 	hover_rotated_3 = bh @ transform([0, 0, -0.025], [0, 0, 0])
 	hover_rotated_3 = hover_rotated_3 @ transform([0, 0, 0], [0, np.pi/4, 0])
 	hover_rotated_Q_3 = ik.inverse(hover_rotated_3, hover_rotated_Q_2)[0]
@@ -157,7 +157,6 @@ def go_grab(q):
 def static_tags():
 	tags = []
 	for (name, pose) in detector.get_detections():
-		print('name is', name)
 		if name != 'tag0':
 			if name != 'tag7':
 				if name != 'tag8':
@@ -165,7 +164,6 @@ def static_tags():
 						if name != 'tag10':
 							if name != 'tag11':
 								if name != 'tag12':
-									print('add it to static blocks')
 									tags += [(name, pose)]
 	return tags
 
@@ -264,13 +262,13 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
 
-		if name == 'tag5':
-			tag5_function(i,block_hover_3D[i])
-			print("tag6 should be pointing at robot now")
-			print("go to drop")
-			stack_badangle(i, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(neutral)
-			continue
+		#if name == 'tag5':
+		tag5_function(i,block_hover_3D[i])
+		print("tag6 should be pointing at robot now")
+		print("go to drop")
+		stack_badangle(i, arm.neutral_position())  # will stack block
+		arm.safe_move_to_position(neutral)
+		continue
 
 
 		print("go get block")
