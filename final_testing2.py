@@ -79,7 +79,7 @@ def stack_badangle(i,cur_q):
 	])
 
 	if i == 0:
-		droppose_3D = droppose_3D@transform([0,0,0],[-np.pi/2],0,0)
+		droppose_3D = droppose_3D@transform([0,0,0],[-np.pi/2,0,0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
@@ -234,17 +234,25 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 
-		if abs(np.arccos(tag_rf[0, 0])) > 2:
+		'''if abs(np.arccos(tag_rf[0, 0])) > 2:
+			print("preprocessing - T6 pointed at robot ")
+			print("hover pose is\n", tag_rf)
+			case += ['badangle']
+			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi])'''
+
+		q = ik.inverse(tag_rf, grabpose)[0]
+		if q[-1] < -2 or q[-1] > 2: #See if J6 is at limit
 			print("preprocessing - T6 pointed at robot ")
 			print("hover pose is\n", tag_rf)
 			case += ['badangle']
 			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi])
+			q = ik.inverse(tag_rf, grabpose)[0]
 		else:
 			case += [None]
 
 		block_hover_3D += [tag_rf]
 		#turn it into Q space
-		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
+		block_hover += [q]
 
 		#make grab pose
 		tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
@@ -271,7 +279,10 @@ if __name__ == "__main__":
 			print("neutral")
 			arm.safe_move_to_position(neutral)
 			print("go to drop")
-			stack_badangle(i, arm.neutral_position())  # will stack block
+			if case[i] == 'badangle': #means we flipped y, so we turn tag6 to even with x
+				stack(i, arm.neutral_position())
+			else:
+				stack_badangle(i, arm.neutral_position())# will stack block
 			arm.safe_move_to_position(neutral)
 			continue
 
