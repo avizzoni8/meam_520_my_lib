@@ -114,11 +114,11 @@ def tag5_function(i,bh):
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
 	original_hover = tag_rf@transform([0,0,-0.025],[0,0,0])'''
 
-	#come in at an angle
+	print('come in at an angle')
 	hover_rotated_1 = bh @ transform([0, 0, 0], [0, -np.pi/4, 0])
 	hover_rotated_Q_1 = ik.inverse(hover_rotated_1, block_hover[i])[0]
 
-	#now move down
+	print('now move down and grab')
 	grab_rotated = bh @transform([0,0,0.05],[0,0,0])
 	grab_rotated = grab_rotated @ transform([0, 0, 0], [0, -np.pi/4, 0])
 	grab_rotated_Q = ik.inverse(grab_rotated, hover_rotated_Q_1)[0]
@@ -127,19 +127,19 @@ def tag5_function(i,bh):
 	go_grab(grab_rotated_Q)
 	#now grabbed at 45 degree angle
 
-	#now move up - still at an angle:
+	print('now move up - still at an angle:')
 	hover_rotated_2 = bh @ transform([0, 0, -0.025], [0, 0, 0])
 	hover_rotated_2 = hover_rotated_2 @ transform([0, 0, 0], [0, -np.pi / 4, 0])
 	hover_rotated_Q_2 = ik.inverse(hover_rotated_2, block_hover[i])[0]
 	arm.safe_move_to_position(hover_rotated_Q_2)
 
-	#now rotate forward to show Tag6
+	print('now rotate forward to show Tag6')
 	hover_rotated_3 = bh @ transform([0, 0, -0.025], [0, 0, 0])
 	hover_rotated_3 = hover_rotated_3 @ transform([0, 0, 0], [0, np.pi/4, 0])
 	hover_rotated_Q_3 = ik.inverse(hover_rotated_3, hover_rotated_Q_2)[0]
 	arm.safe_move_to_position(hover_rotated_Q_3)
 
-	#now move down and drop
+	print('now move down and drop')
 	drop_rotated = bh @ transform([0, 0, 0.045], [0, 0, 0])
 	drop_rotated = drop_rotated @ transform([0, 0, 0], [0, np.pi / 4, 0])
 	drop_rotated_Q = ik.inverse(drop_rotated, grab_rotated_Q)[0]
