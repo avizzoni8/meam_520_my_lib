@@ -266,7 +266,11 @@ if __name__ == "__main__":
 
 		if name == 'tag5':
 			tag5_function(i,block_hover_3D[i])
-			pass
+			print("tag6 should be pointing at robot now")
+			print("go to drop")
+			stack_badangle(i, arm.neutral_position())  # will stack block
+			arm.safe_move_to_position(neutral)
+			continue
 
 
 		print("go get block")
