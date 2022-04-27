@@ -262,18 +262,18 @@ if __name__ == "__main__":
 	for i in [0,1,2,3]:
 		(name, pose) = staticblocks[i]
 
-		#if name == 'tag5':
-		tag5_function(i,block_hover_3D[i])
-		print("tag6 should be pointing at robot now")
-		print("go get block")
-		arm.safe_move_to_position(block_hover[i])
-		go_grab(block_grab[i])
-		print("neutral")
-		arm.safe_move_to_position(neutral)
-		print("go to drop")
-		stack_badangle(i, arm.neutral_position())  # will stack block
-		arm.safe_move_to_position(neutral)
-		continue
+		if name == 'tag5':
+			tag5_function(i,block_hover_3D[i])
+			print("tag6 should be pointing at robot now")
+			print("go get block")
+			arm.safe_move_to_position(block_hover[i])
+			go_grab(block_grab[i])
+			print("neutral")
+			arm.safe_move_to_position(neutral)
+			print("go to drop")
+			stack_badangle(i, arm.neutral_position())  # will stack block
+			arm.safe_move_to_position(neutral)
+			continue
 
 
 		print("go get block")
