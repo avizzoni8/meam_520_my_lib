@@ -336,8 +336,6 @@ if __name__ == "__main__":
 		reset()
 		for i in [0,1,2,3]:
 			(name, pose) = staticblocks[i]
-
-			(name, pose) = staticblocks[i]
 			if i == 0:
 				if case[i] == 'badangle' or name == 'tag5':
 					j = i + 1
@@ -351,11 +349,31 @@ if __name__ == "__main__":
 						j += 1
 					#print('now replace')
 					first = staticblocks[0]
+					first_bg = block_grab[0]
+					first_bh = block_hover[0]
+					first_bh_3D = block_hover_3D [0]
+					first_bg_3D = block_grab_3D[0]
 					#print('first', first)
 					replacement = staticblocks[j]
+					replacement_bg = block_grab[j]
+					replacement_bh = block_hover[j]
+					replacement_bh_3D = block_hover_3D [j]
+					replacement_bg_3D = block_grab_3D[j]
 					#print('replacement', replacement)
 					staticblocks[0] = replacement
+					block_grab[0] = replacement_bg
+					block_hover[0] = replacement_bh
+					block_hover_3D[0] = replacement_bh_3D
+					block_grab_3D[0] = replacement_bg_3D
+
 					staticblocks[j] = first
+					block_grab[j] = first_bg
+					block_hover[j] = first_bh
+					block_hover_3D[j] = first_bh_3D
+					block_grab_3D[j] = first_bg_3D
+
+			(name, pose) = staticblocks[i]
+
 
 			if name == 'tag5':
 				tag5_function(i,block_hover_3D[i])
@@ -458,13 +476,37 @@ if __name__ == "__main__":
 				if case[i] == 'badangle' or name == 'tag5':
 					j = i + 1
 					(name, pose) = staticblocks[j]
-					while case[j] == 'badangle' and name == 'tag5' and j < 3:
-						j += 1
+					# print(j)
+					# print(name, pose)
+					while case[j] == 'badangle' or name == 'tag5' and j < 3:
 						(name, pose) = staticblocks[j]
+						# print("in loop", j)
+						# print(name, pose)
+						j += 1
+					# print('now replace')
 					first = staticblocks[0]
+					first_bg = block_grab[0]
+					first_bh = block_hover[0]
+					first_bh_3D = block_hover_3D[0]
+					first_bg_3D = block_grab_3D[0]
+					# print('first', first)
 					replacement = staticblocks[j]
+					replacement_bg = block_grab[j]
+					replacement_bh = block_hover[j]
+					replacement_bh_3D = block_hover_3D[j]
+					replacement_bg_3D = block_grab_3D[j]
+					# print('replacement', replacement)
 					staticblocks[0] = replacement
+					block_grab[0] = replacement_bg
+					block_hover[0] = replacement_bh
+					block_hover_3D[0] = replacement_bh_3D
+					block_grab_3D[0] = replacement_bg_3D
+
 					staticblocks[j] = first
+					block_grab[j] = first_bg
+					block_hover[j] = first_bh
+					block_hover_3D[j] = first_bh_3D
+					block_grab_3D[j] = first_bg_3D
 
 			(name, pose) = staticblocks[i]
 
