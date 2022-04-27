@@ -244,13 +244,13 @@ if __name__ == "__main__":
 		arm.safe_move_to_position(block_hover[i])
 		go_grab(block_grab[i])
 		print("neutral")
-		arm.safe_move_to_position(droppose)
+		arm.safe_move_to_position(neutral)
 
 		if name == 'tag6':
 			print("tag 6 up")
 			print("go to drop")
 			stack_6up(i, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(droppose)
+			arm.safe_move_to_position(neutral)
 			continue
 
 		elif case[i] == 'badangle':
