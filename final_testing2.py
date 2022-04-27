@@ -170,14 +170,7 @@ if __name__ == "__main__":
 	input("\nWaiting for start... Press ENTER to begin!\n") # get set!
 	print("Go!\n") # go!
 
-	# STUDENT CODE HERE
 
-	# Detect some tags...
-	'''for (name, pose) in detector.get_detections():
-		 print(name,'\n',pose)
-		 if name != 'tag0':'''
-
-	# Move around...
 
 	ik = IK()
 	fk = FK()
@@ -216,7 +209,7 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 
-		if abs(np.arccos(tag_rf[0, 0]))>2: #Needs to be fixed
+		if abs(np.arccos(tag_rf[0, 0])) > 2: #Needs to be fixed
 			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
 			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
 			print("preprocessing - T6 pointed at robot ")
@@ -251,26 +244,26 @@ if __name__ == "__main__":
 		arm.safe_move_to_position(block_hover[i])
 		go_grab(block_grab[i])
 		print("neutral")
-		arm.safe_move_to_position(neutral)
+		arm.safe_move_to_position(droppose)
 
 		if name == 'tag6':
 			print("tag 6 up")
 			print("go to drop")
 			stack_6up(i, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(neutral)
+			arm.safe_move_to_position(droppose)
 			continue
 
 		elif case[i] == 'badangle':
 			print("Tag 6 pointed at robot")
 			print("go to drop")
 			stack_badangle(i, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(neutral)
+			arm.safe_move_to_position(droppose)
 			continue
 
 		else:
 			print("go to drop")
 			stack(i,arm.neutral_position()) #will stack block
-			arm.safe_move_to_position(neutral)
+			arm.safe_move_to_position(droppose)
 
 	"""Dynamic Loop?"""
 
