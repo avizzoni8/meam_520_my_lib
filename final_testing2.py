@@ -51,10 +51,18 @@ def stack(i,cur_q):
 		[1, 0, 0, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
+	release = np.array([
+		[0, 1, 0, 0.562],
+		[0, 0, 1, -0.169],
+		[1, 0, 0, 0.230+0.05*(i+1)],
+		[0, 0, 0, 1],
+	])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
+	qr = ik.inverse(release, q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
+	arm.safe_move_to_position(qr)
 
 def stack_badangle(i,cur_q):
 	droppose_3D = np.array([
@@ -63,13 +71,21 @@ def stack_badangle(i,cur_q):
 		[-1, 0, 0, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
+	release = np.array([
+		[0, 1, 0, 0.562],
+		[0, 0, -1, -0.169],
+		[-1, 0, 0, 0.230 + 0.05 *(i+1)],  # Starts at 0.2+0.005*X
+		[0, 0, 0, 1],
+	])
 
 	if i == 0:
 		droppose_3D = droppose_3D@transform([0,0,0],[0,0,np.pi/2])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
+	qr = ik.inverse(release, q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
+	arm.safe_move_to_position(qr)
 
 def stack_6up(i,cur_q):
 	droppose_3D = np.array([
@@ -78,10 +94,18 @@ def stack_6up(i,cur_q):
 		[0, 0, -1, 0.230+0.05*i], #Starts at 0.2+0.005*X
 		[0, 0, 0, 1],
 	])
+	release = np.array([
+		[1, 0, 0, 0.562],
+		[0, -1, 0, -0.169],
+		[0, 0, -1, 0.230 + 0.05 * (i+1)],  # Starts at 0.2+0.005*X
+		[0, 0, 0, 1],
+	])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
+	qr = ik.inverse(release, q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
+	arm.safe_move_to_position(qr)
 
 def tag5_function(i):
 	#recreate hover location in 3D then rotate
@@ -258,13 +282,13 @@ if __name__ == "__main__":
 			print("Tag 6 pointed at robot")
 			print("go to drop")
 			stack_badangle(i, arm.neutral_position())  # will stack block
-			arm.safe_move_to_position(droppose)
+			arm.safe_move_to_position(neutral)
 			continue
 
 		else:
 			print("go to drop")
 			stack(i,arm.neutral_position()) #will stack block
-			arm.safe_move_to_position(droppose)
+			arm.safe_move_to_position(neutral)
 
 	"""Dynamic Loop?"""
 
