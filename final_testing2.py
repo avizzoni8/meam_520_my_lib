@@ -90,28 +90,33 @@ def tag5_function(i):
 	tag_rf = tag_rf@transform([0,0,0],[0,np.pi,0])
 	tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi/2])
 	original_hover = tag_rf@transform([0,0,-0.025],[0,0,0])
+
+	#come in at an angle
 	hover_rotated_1 = original_hover @ transform([0, 0, 0], [0, -np.pi/4, 0])
 	hover_rotated_Q_1 = ik.inverse(hover_rotated_1, block_hover[i])[0]
 
+	#now move down
 	grab_rotated = original_hover@transform([0,0,0.05],[0,0,0])
 	grab_rotated = grab_rotated @ transform([0, 0, 0], [0, -np.pi/4, 0])
-
 	grab_rotated_Q = ik.inverse(grab_rotated, hover_rotated_Q_1)[0]
 
 	arm.safe_move_to_position(hover_rotated_Q_1)
 	go_grab(grab_rotated_Q)
 	#now grabbed at 45 degree angle
 
-	#now move up:
-	hover_rotated_2 = original_hover @ transform([0, 0, 0], [0, 0, -0.025])
+	#now move up - still at an angle:
+	hover_rotated_2 = original_hover @ transform([0, 0, -0.025], [0, 0, 0])
+	hover_rotated_2 = hover_rotated_2 @ transform([0, 0, 0], [0, -np.pi / 4, 0])
 	hover_rotated_Q_2 = ik.inverse(hover_rotated_2, block_hover[i])[0]
 	arm.safe_move_to_position(hover_rotated_Q_2)
 
 	#now rotate
-	hover_rotated_3 = hover_rotated_2 @ transform([0, 0, 0], [0, np.pi/4, 0])
+	hover_rotated_3 = original_hover @ transform([0, 0, -0.025], [0, 0, 0])
+	hover_rotated_3 = hover_rotated_3 @ transform([0, 0, 0], [0, np.pi/4, 0])
 	hover_rotated_Q_3 = ik.inverse(hover_rotated_3, hover_rotated_Q_2)[0]
 	arm.safe_move_to_position(hover_rotated_Q_3)
 
+	#now move down and drop
 	drop_rotated = original_hover @ transform([0, 0, 0.045], [0, 0, 0])
 	drop_rotated = drop_rotated @ transform([0, 0, 0], [0, np.pi / 4, 0])
 	drop_rotated_Q = ik.inverse(drop_rotated, grab_rotated_Q)[0]
@@ -211,7 +216,7 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 
-		if tag_rf[0, 0]<0: #Needs to be fixed
+		if abs(np.arccos(tag_rf[0, 0]))>2: #Needs to be fixed
 			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
 			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
 			print("preprocessing - T6 pointed at robot ")
