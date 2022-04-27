@@ -79,7 +79,6 @@ def stack_6up(i,cur_q):
 		[0, 0, 0, 1],
 	])
 
-
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	arm.safe_move_to_position(q)
 	arm.exec_gripper_cmd(0.1)
@@ -174,8 +173,7 @@ if __name__ == "__main__":
 
 	ik = IK()
 	fk = FK()
-	#neutral = arm.neutral_position()
-	#neutral_3d = fk.forward(arm.neutral_position())[1]
+
 	neutral = np.array([0, 0, 0, -np.pi / 2, 0, np.pi / 2, np.pi / 4])
 	neutral_3d = fk.forward(neutral)[1]
 
@@ -188,13 +186,16 @@ if __name__ == "__main__":
 	#print('drop  3d',droppose_3D)
 	#neutral_t6 = ik.inverse(neutral_3d, neutral)[0]
 
+	#Get static blocks
 	staticblocks = static_tags()
 
+	#Find tag0
 	for (name, pose) in detector.get_detections():
 		if name == 'tag0':
 			print('found tag0')
 			pose0 = pose
 
+	#PREPROCESSING
 	block_grab = []
 	block_hover =[]
 	case =[]
@@ -209,22 +210,22 @@ if __name__ == "__main__":
 		tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 		#print("hover \n", tag_rf)
 
-		if abs(np.arccos(tag_rf[0, 0])) > 2: #Needs to be fixed
-			#if np.arccos(tag_rf[0, 0]) > np.pi/4-0.01:
-			#if np.arccos(tag_rf[0, 0]) < 3*np.pi/4+0.01 :
+		if abs(np.arccos(tag_rf[0, 0])) > 2:
 			print("preprocessing - T6 pointed at robot ")
 			print("hover pose is\n", tag_rf)
 			case += ['badangle']
 			tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi])
+		else:
+			case += [None]
 
-			#turn it into Q space
+		#turn it into Q space
 		block_hover += [ik.inverse(tag_rf, grabpose)[0]]
 
+		#make grab pose
 		tag_rf = tag_rf@transform([0,0,0.05],[0,0,0])
 		print("grab pose \n", tag_rf)
-			#Turn it into Q space
+		#Turn it into Q space
 		block_grab += [ik.inverse(tag_rf,block_hover[i])[0]]
-		case += [None]
 
 
 
