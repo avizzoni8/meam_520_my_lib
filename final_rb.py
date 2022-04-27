@@ -353,24 +353,28 @@ if __name__ == "__main__":
 					first_bh = block_hover[0]
 					first_bh_3D = block_hover_3D [0]
 					first_bg_3D = block_grab_3D[0]
+					first_case = case[0]
 					#print('first', first)
 					replacement = staticblocks[j]
 					replacement_bg = block_grab[j]
 					replacement_bh = block_hover[j]
 					replacement_bh_3D = block_hover_3D [j]
 					replacement_bg_3D = block_grab_3D[j]
+					replacement_case = case[j]
 					#print('replacement', replacement)
 					staticblocks[0] = replacement
 					block_grab[0] = replacement_bg
 					block_hover[0] = replacement_bh
 					block_hover_3D[0] = replacement_bh_3D
 					block_grab_3D[0] = replacement_bg_3D
+					case[0] = replacement_case
 
 					staticblocks[j] = first
 					block_grab[j] = first_bg
 					block_hover[j] = first_bh
 					block_hover_3D[j] = first_bh_3D
 					block_grab_3D[j] = first_bg_3D
+					case[j] = first_case
 
 			(name, pose) = staticblocks[i]
 
@@ -472,6 +476,7 @@ if __name__ == "__main__":
 		for i in [0, 1, 2, 3]:
 			(name, pose) = staticblocks[i]
 
+			#Need to do reordering incase we stack at a bad angle first time around
 			if i == 0:
 				if case[i] == 'badangle' or name == 'tag5':
 					j = i + 1
@@ -489,24 +494,28 @@ if __name__ == "__main__":
 					first_bh = block_hover[0]
 					first_bh_3D = block_hover_3D[0]
 					first_bg_3D = block_grab_3D[0]
+					first_case = case[0]
 					# print('first', first)
 					replacement = staticblocks[j]
 					replacement_bg = block_grab[j]
 					replacement_bh = block_hover[j]
 					replacement_bh_3D = block_hover_3D[j]
 					replacement_bg_3D = block_grab_3D[j]
+					replacement_case = case[j]
 					# print('replacement', replacement)
 					staticblocks[0] = replacement
 					block_grab[0] = replacement_bg
 					block_hover[0] = replacement_bh
 					block_hover_3D[0] = replacement_bh_3D
 					block_grab_3D[0] = replacement_bg_3D
+					case[0] = replacement_case
 
 					staticblocks[j] = first
 					block_grab[j] = first_bg
 					block_hover[j] = first_bh
 					block_hover_3D[j] = first_bh_3D
 					block_grab_3D[j] = first_bg_3D
+					case[j] = first_case
 
 			(name, pose) = staticblocks[i]
 
