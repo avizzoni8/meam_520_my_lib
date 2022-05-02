@@ -445,13 +445,6 @@ if __name__ == "__main__":
 		for i in [0, 1, 2, 3]:
 			(name, pose) = staticblocks[i]
 
-			#Need to do reordering incase we stack at a bad angle first time around
-			if i == 0:
-				if case[i] == 'badangle' or name == 'tag5':
-					#TODO first stack with 45 degree grab and drop
-
-			(name, pose) = staticblocks[i]
-
 			if name == 'tag5':
 				tag5_function(i, block_hover_3D[i])
 				print("tag6 should be pointing at robot now")
