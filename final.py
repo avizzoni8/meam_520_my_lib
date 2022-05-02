@@ -69,8 +69,8 @@ def stack_blue(i,cur_q):
 	])
 
 	if i==0:
-		droppose_3D = droppose_3D @transform([0, 0, 0], [0, -np.pi, 0])
-		release = release @ transform([0, 0, 0], [0, -np.pi, 0])
+		droppose_3D = droppose_3D @transform([0, 0, 0], [0, -np.pi/4, 0])
+		release = release @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
@@ -93,8 +93,8 @@ def stack_red(i,cur_q):
 	])
 
 	if i==0:
-		droppose_3D = droppose_3D @transform([0, 0, 0], [0, -np.pi, 0])
-		release = release @ transform([0, 0, 0], [0, -np.pi, 0])
+		droppose_3D = droppose_3D @transform([0, 0, 0], [0, -np.pi/4, 0])
+		release = release @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
@@ -117,8 +117,8 @@ def stack_badangle_blue(i,cur_q):
 	])
 
 	if i==0:
-		droppose_3D = droppose_3D @transform([0, 0, 0], [0, np.pi, 0])
-		release = release @ transform([0, 0, 0], [0, np.pi, 0])
+		droppose_3D = droppose_3D @transform([0, 0, 0], [0, np.pi/4, 0])
+		release = release @ transform([0, 0, 0], [0, np.pi/4, 0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
@@ -141,8 +141,8 @@ def stack_badangle_red(i,cur_q):
 	])
 
 	if i==0:
-		droppose_3D = droppose_3D @transform([0, 0, 0], [0, np.pi, 0])
-		release = release @ transform([0, 0, 0], [0, np.pi, 0])
+		droppose_3D = droppose_3D @transform([0, 0, 0], [0, np.pi/4, 0])
+		release = release @ transform([0, 0, 0], [0, np.pi/4, 0])
 
 	q = ik.inverse(droppose_3D, cur_q)[0]
 	qr = ik.inverse(release, q)[0]
@@ -323,9 +323,9 @@ if __name__ == "__main__":
 
 			if i==0:
 				if case[i] == 'badangle' or name == 'tag5':
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi,0])
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
 				else:
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi, 0])
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 
 			block_hover_3D += [tag_rf]
@@ -423,9 +423,9 @@ if __name__ == "__main__":
 
 			if i==0:
 				if case[i] == 'badangle' or name == 'tag5':
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi,0])
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
 				else:
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi, 0])
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 			block_hover_3D += [tag_rf]
 			# turn it into Q space
