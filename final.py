@@ -311,11 +311,6 @@ if __name__ == "__main__":
 			tag_rf = tag_rf@transform([0,0,-0.025],[0,0,0])
 			#print("hover \n", tag_rf)
 
-			if i==0:
-				if case[i] == 'badangle' or name == 'tag5':
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
-				else:
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 			q = ik.inverse(tag_rf, grabpose)[0]
 			if q[-1] < -2 or q[-1] > 2: #See if J6 is at limit
@@ -323,11 +318,17 @@ if __name__ == "__main__":
 				print("hover pose is\n", tag_rf)
 				case += ['badangle']
 				tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi])
-				q = ik.inverse(tag_rf, grabpose)[0]
 			else:
 				case += [None]
 
+			if i==0:
+				if case[i] == 'badangle' or name == 'tag5':
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
+				else:
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
+
 			block_hover_3D += [tag_rf]
+			q = ik.inverse(tag_rf, grabpose)[0]
 			block_hover += [q]
 
 			#make grab pose
@@ -409,25 +410,23 @@ if __name__ == "__main__":
 			tag_rf = tag_rf @ transform([0, 0, -0.025], [0, 0, 0])
 			# print("hover \n", tag_rf)
 
-			if i==0:
-				if case[i] == 'badangle' or name == 'tag5':
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
-				else:
-					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
-
 			q = ik.inverse(tag_rf, grabpose)[0]
 			if q[-1] < -2 or q[-1] > 2:  # See if J6 is at limit
 				print("preprocessing - T6 pointed at robot ")
 				print("hover pose is\n", tag_rf)
 				case += ['badangle']
 				tag_rf = tag_rf @ transform([0, 0, 0], [0, 0, np.pi])
-				q = ik.inverse(tag_rf, grabpose)[0]
 			else:
 				case += [None]
 
+			if i==0:
+				if case[i] == 'badangle' or name == 'tag5':
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, np.pi/4,0])
+				else:
+					tag_rf = tag_rf @ transform([0, 0, 0], [0, -np.pi/4, 0])
 
 			block_hover_3D += [tag_rf]
-		
+			q = ik.inverse(tag_rf, grabpose)[0]
 			block_hover += [q]
 
 			# make grab pose
